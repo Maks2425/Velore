@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }} — {{ product.brand.name }} | Velore{% endblock %}
+{% block meta_description %}{{ product.description|truncatewords:25|default:product.name }}{% endblock %}
+{% block og_type %}product{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ product.name|escapejs }}",
+  "sku": "{{ product.sku|escapejs }}",
+  "brand": {"@type": "Brand", "name": "{{ product.brand.name|escapejs }}"},
+  "description": "{{ product.description|escapejs }}",
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "UAH",
+    "price": "{{ product.price }}",
+    "availability": "{% if product.in_stock %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <nav aria-label="breadcrumb" class="text-muted" style="font-size:0.85rem;margin-bottom:var(--space-3);">
+      <a href="{% url 'core:home' %}">Головна</a> /
+      <a href="{{ product.brand.get_absolute_url }}">{{ product.brand.name }}</a> /
+      {{ product.name }}
+    </nav>
+
+    <div class="two-col">
+      <div class="image-wrap" style="border-radius:var(--radius-lg);">
+        {% with image=product.main_image %}
+          {% if image %}
+            <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}">
+          {% else %}
+            <img src="{% static 'images/velore-logo.png' %}" alt="{{ product.name }}">
+          {% endif %}
+        {% endwith %}
+      </div>
+
+      <div>
+        <span class="brand-name">{{ product.brand.name }}</span>
+        <h1>{{ product.name }}</h1>
+        <p class="price" style="font-size:1.4rem;">{{ product.price }} ₴</p>
+        <p>{{ product.description }}</p>
+        <p class="text-muted">
+          {% if product.in_stock %}
+            <span class="badge badge-success">В наявності ({{ product.stock }})</span>
+          {% else %}
+            <span class="badge badge-error">Немає в наявності</span>
+          {% endif %}
+        </p>
+
+        {% if product.in_stock %}
+          <form action="{% url 'cart:add_to_cart' product.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button type="submit" class="btn btn-primary">Додати в кошик</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if related_products %}
+<section class="section">
+  <div class="container">
+    <div class="section-title"><h2>Інші товари {{ product.brand.name }}</h2></div>
+    <div class="product-grid">
+      {% for product in related_products %}
+        {% include "catalog/_product_card.html" %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

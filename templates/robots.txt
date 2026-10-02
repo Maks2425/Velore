@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /accounts/roles/
+Disallow: /orders/manage/
+Disallow: /admin/
+
+Sitemap: {{ scheme }}://{{ site_domain }}/sitemap.xml

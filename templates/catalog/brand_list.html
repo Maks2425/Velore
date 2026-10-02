@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Бренди — Velore{% endblock %}
+{% block meta_description %}Перегляньте колекції Bape, Maison Margiela, Balenciaga та Dior у Velore.{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="section-title">
+      <h1>Бренди</h1>
+    </div>
+    <div class="brand-grid">
+      {% for brand in brands %}
+        <a class="brand-card" href="{{ brand.get_absolute_url }}">
+          <img src="{{ brand.logo.url }}" alt="Логотип {{ brand.name }}" loading="lazy">
+          <h2 style="font-size:1.1rem;">{{ brand.name }}</h2>
+          <p class="text-muted">{{ brand.description|truncatewords:18 }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

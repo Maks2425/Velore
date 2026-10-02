@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Замовлення {{ order.number }} — Velore{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1>Замовлення {{ order.number }}</h1>
+    <p>Поточний статус: <span class="badge badge-status">{{ order.get_status_display }}</span></p>
+
+    <div class="two-col mt-4">
+      <div>
+        <h2 style="font-size:1.1rem;">Трекінг доставки</h2>
+        {% if order.status_events.all %}
+          <ul class="timeline">
+            {% for event in order.status_events.all %}
+              <li class="done">
+                <strong>{{ event.get_status_display }}</strong>
+                <div class="timeline-note">
+                  {{ event.created_at|date:"d.m.Y H:i" }}
+                  {% if event.location %} · {{ event.location }}{% endif %}
+                </div>
+                {% if event.note %}<div class="timeline-note">{{ event.note }}</div>{% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted">Трекінг-інформація поки відсутня.</p>
+        {% endif %}
+      </div>
+
+      <div class="form-card" style="margin-inline:0;">
+        <h2 style="font-size:1.1rem;">Деталі</h2>
+        <p class="text-muted">{{ order.shipping_full_name }}<br>
+        {{ order.shipping_address }}, {{ order.shipping_city }}, {{ order.shipping_postal_code }}<br>
+        {{ order.shipping_phone }}</p>
+        <table>
+          {% for item in order.items.all %}
+            <tr><td>{{ item.product_name }} × {{ item.quantity }}</td><td>{{ item.subtotal }} ₴</td></tr>
+          {% endfor %}
+        </table>
+        <p class="flex-between mt-4"><strong>Разом</strong><strong>{{ order.total_price }} ₴</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Вхід — Velore{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 style="text-align:center;">Вхід</h1>
+    <form method="post" class="form-card">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<div class="form-errors">{{ field.errors }}</div>{% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary" style="width:100%;">Увійти</button>
+      <p class="text-muted mt-4" style="text-align:center;">Немає акаунту? <a href="{% url 'accounts:register' %}">Зареєструватися</a></p>
+    </form>
+  </div>
+</section>
+{% endblock %}

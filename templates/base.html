@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Velore — ексклюзивний брендовий одяг, взуття та парфуми{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Velore — онлайн-бутик брендового одягу, взуття та парфумів від Bape, Maison Margiela, Balenciaga та Dior.{% endblock %}">
+  <link rel="canonical" href="{% block canonical_url %}https://{{ request.get_host }}{{ request.path }}{% endblock %}">
+
+  <meta property="og:site_name" content="Velore">
+  <meta property="og:title" content="{% block og_title %}Velore — ексклюзивний брендовий одяг, взуття та парфуми{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Velore — онлайн-бутик брендового одягу, взуття та парфумів від Bape, Maison Margiela, Balenciaga та Dior.{% endblock %}">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:image" content="{% block og_image %}{% static 'images/velore-logo.png' %}{% endblock %}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="{% static 'images/velore-logo.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  {% block structured_data %}{% endblock %}
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  {% include "includes/navbar.html" %}
+
+  <main id="main-content">
+    {% if messages %}
+      <div class="container">
+        <ul class="messages">
+          {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include "includes/footer.html" %}
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

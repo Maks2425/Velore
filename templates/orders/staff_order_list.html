@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Керування замовленнями — Velore{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1>Керування замовленнями</h1>
+    <table>
+      <thead>
+        <tr><th>Номер</th><th>Клієнт</th><th>Статус</th><th>Сума</th><th>Оновити статус</th></tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+          <tr>
+            <td><a href="{{ order.get_absolute_url }}">{{ order.number }}</a></td>
+            <td>{{ order.user.username }}</td>
+            <td><span class="badge badge-status">{{ order.get_status_display }}</span></td>
+            <td>{{ order.total_price }} ₴</td>
+            <td>
+              <form action="{% url 'orders:update_status' order.number %}" method="post" style="display:flex;gap:4px;flex-wrap:wrap;">
+                {% csrf_token %}
+                <select name="status" style="min-height:36px;">
+                  {% for value, label in order.Status.choices %}
+                    <option value="{{ value }}" {% if value == order.status %}selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
+                </select>
+                <input type="text" name="location" placeholder="Локація" style="min-height:36px;width:120px;">
+                <button type="submit" class="btn btn-outline" style="min-height:36px;">Оновити</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

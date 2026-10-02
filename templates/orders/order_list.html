@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Мої замовлення — Velore{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1>Мої замовлення</h1>
+
+    {% if orders %}
+      <table>
+        <thead>
+          <tr><th>Номер</th><th>Статус</th><th>Сума</th><th>Дата</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+            <tr>
+              <td>{{ order.number }}</td>
+              <td><span class="badge badge-status">{{ order.get_status_display }}</span></td>
+              <td>{{ order.total_price }} ₴</td>
+              <td>{{ order.created_at|date:"d.m.Y" }}</td>
+              <td><a href="{{ order.get_absolute_url }}" class="btn btn-outline" style="min-height:36px;padding:4px 12px;">Де моє замовлення?</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="empty-state">
+        <p>У вас ще немає замовлень.</p>
+        <a href="{% url 'catalog:brand_list' %}" class="btn btn-outline">До каталогу</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

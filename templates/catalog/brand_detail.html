@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{{ brand.name }} — одяг, взуття та аксесуари | Velore{% endblock %}
+{% block meta_description %}{{ brand.description|truncatewords:25|default:brand.name }}{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Brand",
+  "name": "{{ brand.name|escapejs }}",
+  "description": "{{ brand.description|escapejs }}"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-bottom:0;">
+  <div class="container">
+    <nav aria-label="breadcrumb" class="text-muted" style="font-size:0.85rem;margin-bottom:var(--space-3);">
+      <a href="{% url 'core:home' %}">Головна</a> / <a href="{% url 'catalog:brand_list' %}">Бренди</a> / {{ brand.name }}
+    </nav>
+    <div class="flex-between">
+      <div>
+        <h1>{{ brand.name }}</h1>
+        <p class="text-muted">{{ brand.description }}</p>
+      </div>
+      <img src="{{ brand.logo.url }}" alt="Логотип {{ brand.name }}" style="height:72px;width:auto;">
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {% if products %}
+      <div class="product-grid">
+        {% for product in products %}
+          {% include "catalog/_product_card.html" %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>Поки що немає товарів цього бренду.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

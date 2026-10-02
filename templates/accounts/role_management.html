@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Керування ролями — Velore{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1>Керування ролями користувачів</h1>
+    <p class="text-muted">Лише Супер Адмін може призначати ролі «Адмін» та «Консультант».</p>
+
+    <table>
+      <thead>
+        <tr><th>Користувач</th><th>Email</th><th>Поточна роль</th><th>Призначити роль</th></tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+          <tr>
+            <td>{{ u.username }}</td>
+            <td>{{ u.email }}</td>
+            <td><span class="badge badge-status">{{ u.get_role_display_name }}</span></td>
+            <td>
+              <form action="{% url 'accounts:assign_role' u.pk %}" method="post" style="display:flex;gap:4px;">
+                {% csrf_token %}
+                <select name="role" style="min-height:36px;">
+                  <option value="customer" {% if u.role == "customer" %}selected{% endif %}>Клієнт</option>
+                  <option value="consultant" {% if u.role == "consultant" %}selected{% endif %}>Консультант</option>
+                  <option value="admin" {% if u.role == "admin" %}selected{% endif %}>Адмін</option>
+                </select>
+                <button type="submit" class="btn btn-outline" style="min-height:36px;">Зберегти</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% if is_paginated %}
+      <div class="flex-between mt-4">
+        {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}">← Назад</a>{% endif %}
+        <span class="text-muted">Сторінка {{ page_obj.number }} з {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}">Далі →</a>{% endif %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
