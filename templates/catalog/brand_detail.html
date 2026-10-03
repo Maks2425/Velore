@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ brand.name }} — одяг, взуття та аксесуари | Velore{% endblock %}
+{% block title %}{{ brand.name }} — одяг, взуття та парфуми | Velore{% endblock %}
 {% block meta_description %}{{ brand.description|truncatewords:25|default:brand.name }}{% endblock %}
 {% block structured_data %}
 <script type="application/ld+json">
@@ -14,34 +14,42 @@
 {% endblock %}
 
 {% block content %}
-<section class="section" style="padding-bottom:0;">
-  <div class="container">
-    <nav aria-label="breadcrumb" class="text-muted" style="font-size:0.85rem;margin-bottom:var(--space-3);">
-      <a href="{% url 'core:home' %}">Головна</a> / <a href="{% url 'catalog:brand_list' %}">Бренди</a> / {{ brand.name }}
-    </nav>
-    <div class="flex-between">
-      <div>
-        <h1>{{ brand.name }}</h1>
-        <p class="text-muted">{{ brand.description }}</p>
-      </div>
-      <img src="{{ brand.logo.url }}" alt="Логотип {{ brand.name }}" style="height:72px;width:auto;">
+<section class="page-head page-head--brand">
+  <div class="container flex-between">
+    <div>
+      <nav aria-label="Хлібні крихти" class="breadcrumbs">
+        <a href="{% url 'core:home' %}">Головна</a> / <a href="{% url 'catalog:brand_list' %}">Бренди</a> / <span>{{ brand.name }}</span>
+      </nav>
+      <h1>{{ brand.name }}</h1>
+      <p class="lead">{{ brand.description }}</p>
     </div>
+    <img src="{{ brand.logo.url }}" alt="Логотип {{ brand.name }}" class="brand-logo-lg">
   </div>
 </section>
 
-<section class="section">
-  <div class="container">
-    {% if products %}
-      <div class="product-grid">
-        {% for product in products %}
-          {% include "catalog/_product_card.html" %}
-        {% endfor %}
-      </div>
-    {% else %}
-      <div class="empty-state">
-        <p>Поки що немає товарів цього бренду.</p>
-      </div>
-    {% endif %}
+<section class="section section-tight">
+  <div class="container shop-layout">
+    <aside class="shop-sidebar">
+      {% with brand_locked=True %}
+        {% include "catalog/_filters.html" %}
+      {% endwith %}
+    </aside>
+
+    <div class="shop-results">
+      <p class="results-count text-muted">Товарів: {{ products|length }}</p>
+      {% if products %}
+        <div class="product-grid">
+          {% for product in products %}
+            {% include "catalog/_product_card.html" %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <p>За цими фільтрами товарів цього бренду не знайдено.</p>
+          <a href="{{ brand.get_absolute_url }}" class="btn btn-outline">Скинути фільтри</a>
+        </div>
+      {% endif %}
+    </div>
   </div>
 </section>
 {% endblock %}

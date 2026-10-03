@@ -1,7 +1,42 @@
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, ListView
 
+from .forms import ProductFilterForm
 from .models import Brand, Product
+
+
+class FilteredProductMixin:
+    filter_form_class = ProductFilterForm
+
+    def get_filter_form(self):
+        if not hasattr(self, "_filter_form"):
+            self._filter_form = self.filter_form_class(self.request.GET or None)
+        return self._filter_form
+
+    def get_filtered_products(self, base_queryset):
+        form = self.get_filter_form()
+        queryset = base_queryset.available().with_related()
+        if form.is_valid():
+            return form.filter_queryset(queryset)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["filter_form"] = self.get_filter_form()
+        query = self.request.GET.copy()
+        query.pop("page", None)
+        context["filter_query"] = query.urlencode()
+        return context
+
+
+class ShopView(FilteredProductMixin, ListView):
+    model = Product
+    template_name = "catalog/shop.html"
+    context_object_name = "products"
+    paginate_by = 24
+
+    def get_queryset(self):
+        return self.get_filtered_products(Product.objects.all())
 
 
 class BrandListView(ListView):
@@ -13,7 +48,7 @@ class BrandListView(ListView):
         return Brand.objects.filter(is_active=True)
 
 
-class BrandDetailView(DetailView):
+class BrandDetailView(FilteredProductMixin, DetailView):
     model = Brand
     template_name = "catalog/brand_detail.html"
     context_object_name = "brand"
@@ -24,10 +59,7 @@ class BrandDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["products"] = (
-            Product.objects.available().with_related().filter(brand=self.object)
-        )
-        context["brands"] = Brand.objects.filter(is_active=True)
+        context["products"] = self.get_filtered_products(self.object.products.all())
         return context
 
 
@@ -35,7 +67,6 @@ class ProductDetailView(DetailView):
     model = Product
     template_name = "catalog/product_detail.html"
     context_object_name = "product"
-    slug_url_kwarg = "product_slug"
 
     def get_object(self, queryset=None):
         return get_object_or_404(

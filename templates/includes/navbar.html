@@ -1,46 +1,34 @@
 {% load static %}
-<a href="#main-content" class="visually-hidden-focusable" style="position:absolute;left:-9999px;top:0;">Перейти до основного контенту</a>
+<a href="#main-content" class="skip-link">Перейти до основного контенту</a>
 <header class="site-header">
   <div class="container header-row">
-    <a href="{% url 'core:home' %}" class="logo" aria-label="Velore — на головну">
-      <img src="{% static 'images/velore-logo.png' %}" alt="Velore">
-      Velore
-    </a>
-
-    <nav aria-label="Бренди">
-      <ul class="brand-tabs">
-        {% for brand in nav_brands %}
-          <li>
-            <a href="{% url 'catalog:brand_detail' brand.slug %}"
-               {% if request.resolver_match.kwargs.brand_slug == brand.slug %}aria-current="page"{% endif %}>
-              {{ brand.name }}
-            </a>
-          </li>
-        {% endfor %}
-      </ul>
+    <nav class="nav-left" aria-label="Основна навігація">
+      <a href="{% url 'catalog:shop' %}?gender=men">Чоловікам</a>
+      <a href="{% url 'catalog:shop' %}?gender=women">Жінкам</a>
     </nav>
 
-    <div class="nav-actions">
-      <a href="{% url 'orders:order_list' %}" title="Мої замовлення">Замовлення</a>
-      <a href="{% url 'cart:view_cart' %}" aria-label="Кошик">
-        Кошик
-        {% if nav_cart_count %}<span class="cart-count">{{ nav_cart_count }}</span>{% endif %}
-      </a>
+    <a href="{% url 'core:home' %}" class="logo" aria-label="Velore — на головну">
+      <img src="{% static 'images/velore-logo.png' %}" alt="Velore">
+    </a>
+
+    <nav class="nav-right" aria-label="Бренди та сервіси">
+      <a href="{% url 'catalog:brand_list' %}">Бренди</a>
+      <a href="{% url 'catalog:shop' %}">Магазин</a>
+      <a href="{% url 'orders:order_list' %}" class="icon-link">Замовлення</a>
       {% if user.is_authenticated %}
-        {% if user.is_staff or user.is_superuser %}
-          <a href="{% url 'orders:staff_order_list' %}">Керування</a>
-        {% endif %}
-        {% if user.is_superuser %}
-          <a href="{% url 'accounts:role_management' %}">Ролі</a>
-        {% endif %}
-        <form action="{% url 'accounts:logout' %}" method="post" style="display:inline;">
+        {% if user.is_staff or user.is_superuser %}<a href="{% url 'orders:staff_order_list' %}">Керування</a>{% endif %}
+        {% if user.is_superuser %}<a href="{% url 'accounts:role_management' %}">Ролі</a>{% endif %}
+        <form action="{% url 'accounts:logout' %}" method="post" class="inline-form">
           {% csrf_token %}
-          <button type="submit" class="btn btn-outline" style="padding:4px 12px;min-height:auto;">Вийти</button>
+          <button type="submit" class="link-button">Вийти</button>
         </form>
       {% else %}
         <a href="{% url 'accounts:login' %}">Увійти</a>
-        <a href="{% url 'accounts:register' %}" class="btn btn-primary" style="padding:6px 16px;min-height:auto;">Реєстрація</a>
       {% endif %}
-    </div>
+      <a href="{% url 'cart:view_cart' %}" class="cart-link" aria-label="Кошик, товарів: {{ nav_cart_count }}">
+        Кошик
+        {% if nav_cart_count %}<span class="cart-count">{{ nav_cart_count }}</span>{% endif %}
+      </a>
+    </nav>
   </div>
 </header>

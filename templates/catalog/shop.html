@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Магазин — одяг, взуття та парфуми | Velore{% endblock %}
+{% block meta_description %}Каталог брендового одягу, взуття та парфумів Velore: фільтри за статтю, категорією та брендом.{% endblock %}
+{% block canonical_url %}https://{{ request.get_host }}{% url 'catalog:shop' %}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <p class="eyebrow">Каталог</p>
+    <h1>Магазин</h1>
+    <p class="lead">Знайдіть свій стиль: фільтруйте за статтю, категорією та брендом.</p>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container shop-layout">
+    <aside class="shop-sidebar">
+      {% include "catalog/_filters.html" %}
+    </aside>
+
+    <div class="shop-results">
+      <p class="results-count text-muted">Знайдено товарів: {{ page_obj.paginator.count }}</p>
+      {% if products %}
+        <div class="product-grid">
+          {% for product in products %}
+            {% include "catalog/_product_card.html" %}
+          {% endfor %}
+        </div>
+        {% include "includes/pagination.html" %}
+      {% else %}
+        <div class="empty-state">
+          <p>За цими фільтрами товарів не знайдено.</p>
+          <a href="{% url 'catalog:shop' %}" class="btn btn-outline">Скинути фільтри</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -2,15 +2,33 @@
 {% load static %}
 
 {% block content %}
-<section class="hero">
-  <div class="container">
-    <h1>Світ люксової моди в одному бутику</h1>
-    <p>Ексклюзивні колекції Bape, Maison Margiela, Balenciaga та Dior — одяг, взуття та парфуми для тих, хто цінує стиль.</p>
+<section class="hero" style="--hero-image: url('{{ hero_image_url }}')">
+  <div class="hero-inner container">
+    <p class="hero-eyebrow">Нова колекція</p>
+    <h1 class="hero-title">Осінь&nbsp;2026</h1>
+    <p class="hero-text">Bape, Maison Margiela, Balenciaga та Dior — одяг, взуття і парфуми в одному місці.</p>
     <div class="hero-actions">
-      <a href="{% url 'catalog:brand_list' %}" class="btn btn-primary">Переглянути бренди</a>
-      {% if not user.is_authenticated %}
-        <a href="{% url 'accounts:register' %}" class="btn btn-outline">Створити акаунт</a>
-      {% endif %}
+      <a href="{% url 'catalog:shop' %}?gender=men" class="btn btn-light">Чоловікам</a>
+      <a href="{% url 'catalog:shop' %}?gender=women" class="btn btn-light">Жінкам</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="gender-grid">
+      <a class="gender-card" href="{% url 'catalog:shop' %}?gender=men">
+        <span class="gender-card__label">Чоловіки</span>
+        <span class="gender-card__cta">Переглянути →</span>
+      </a>
+      <a class="gender-card" href="{% url 'catalog:shop' %}?gender=women">
+        <span class="gender-card__label">Жінки</span>
+        <span class="gender-card__cta">Переглянути →</span>
+      </a>
+      <a class="gender-card" href="{% url 'catalog:shop' %}?category=perfume">
+        <span class="gender-card__label">Парфуми</span>
+        <span class="gender-card__cta">Переглянути →</span>
+      </a>
     </div>
   </div>
 </section>
@@ -18,13 +36,13 @@
 <section class="section">
   <div class="container">
     <div class="section-title">
-      <h2>Наші бренди</h2>
-      <p>Чотири доми, одна ідентичність бездоганного стилю</p>
+      <h2>Бренди</h2>
+      <a href="{% url 'catalog:brand_list' %}" class="text-link">Усі бренди →</a>
     </div>
     <div class="brand-grid">
       {% for brand in brands %}
         <a class="brand-card" href="{{ brand.get_absolute_url }}">
-          <img src="{{ brand.logo.url }}" alt="Логотип {{ brand.name }}" loading="lazy">
+          <img src="{{ brand.logo.url }}" alt="Логотип {{ brand.name }}" loading="lazy" width="160" height="64">
           <h3>{{ brand.name }}</h3>
           <p class="text-muted">{{ brand.country }}{% if brand.founded_year %} · {{ brand.founded_year }}{% endif %}</p>
         </a>
@@ -38,7 +56,7 @@
   <div class="container">
     <div class="section-title">
       <h2>Обрані товари</h2>
-      <a href="{% url 'catalog:brand_list' %}" class="text-muted">Усі бренди →</a>
+      <a href="{% url 'catalog:shop' %}" class="text-link">Весь каталог →</a>
     </div>
     <div class="product-grid">
       {% for product in featured_products %}

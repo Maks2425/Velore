@@ -1,0 +1,41 @@
+<form method="get" class="filters" action="{{ request.path }}" aria-label="Фільтри товарів">
+  <div class="filter-group">
+    <span class="filter-label" id="gender-label">Для кого</span>
+    <div class="chip-row" role="radiogroup" aria-labelledby="gender-label">
+      {% for value, label in filter_form.fields.gender.choices %}
+        <label class="chip">
+          <input type="radio" name="gender" value="{{ value }}"
+                 {% if filter_form.cleaned_data.gender == value or not filter_form.cleaned_data.gender and value == '' %}checked{% endif %}>
+          <span>{{ label }}</span>
+        </label>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="filter-group">
+    <label for="{{ filter_form.category.id_for_label }}" class="filter-label">Категорія</label>
+    {{ filter_form.category }}
+  </div>
+
+  {% if not brand_locked %}
+    <div class="filter-group">
+      <label for="{{ filter_form.brand.id_for_label }}" class="filter-label">Бренд</label>
+      {{ filter_form.brand }}
+    </div>
+  {% endif %}
+
+  <div class="filter-group">
+    <label for="{{ filter_form.sort.id_for_label }}" class="filter-label">Сортування</label>
+    {{ filter_form.sort }}
+  </div>
+
+  <div class="filter-group">
+    <label for="{{ filter_form.q.id_for_label }}" class="filter-label">Пошук</label>
+    {{ filter_form.q }}
+  </div>
+
+  <div class="filter-actions">
+    <button type="submit" class="btn btn-primary btn-block">Застосувати</button>
+    <a href="{{ request.path }}" class="btn btn-outline btn-block">Скинути</a>
+  </div>
+</form>

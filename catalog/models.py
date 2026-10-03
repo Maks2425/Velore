@@ -42,8 +42,14 @@ class ProductQuerySet(models.QuerySet):
 
 
 class Product(models.Model):
+    class Gender(models.TextChoices):
+        WOMEN = "women", "Жінкам"
+        MEN = "men", "Чоловікам"
+        UNISEX = "unisex", "Унісекс"
+
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="products")
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="products")
+    gender = models.CharField(max_length=10, choices=Gender.choices, default=Gender.UNISEX)
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=220, unique=True)
     description = models.TextField(blank=True)
