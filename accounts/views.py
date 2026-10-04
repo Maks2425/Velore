@@ -1,11 +1,16 @@
+import secrets
+from datetime import timedelta
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views import View
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, TemplateView
 
 from .forms import RegistrationForm
 from .models import User
@@ -69,3 +74,37 @@ class AssignRoleView(SuperAdminRequiredMixin, View):
 
         messages.success(request, f"Роль користувача {target_user.username} оновлено.")
         return redirect("accounts:role_management")
+
+
+class TelegramLinkView(LoginRequiredMixin, TemplateView):
+    template_name = "accounts/telegram_link.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        bot = settings.TELEGRAM_BOT_USERNAME
+        context["bot_username"] = bot
+        context["linked"] = user.telegram_chat_id is not None
+        code_fresh = (
+            user.telegram_link_code
+            and user.telegram_link_code_created_at
+            and timezone.now() - user.telegram_link_code_created_at < timedelta(minutes=15)
+        )
+        if code_fresh and bot and not context["linked"]:
+            context["code"] = user.telegram_link_code
+            context["link_url"] = f"https://t.me/{bot}?start={user.telegram_link_code}"
+        return context
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        user.telegram_link_code = secrets.token_urlsafe(16)
+        user.telegram_link_code_created_at = timezone.now()
+        user.save(update_fields=["telegram_link_code", "telegram_link_code_created_at"])
+        return redirect("accounts:telegram_link")
+
+
+class TelegramUnlinkView(LoginRequiredMixin, View):
+    def post(self, request):
+        User.objects.filter(pk=request.user.pk).update(telegram_chat_id=None, telegram_link_code="")
+        messages.success(request, "Telegram відв'язано.")
+        return redirect("accounts:telegram_link")

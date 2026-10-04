@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Telegram — Velore{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <p class="eyebrow">Сповіщення та чат</p>
+    <h1>Telegram</h1>
+    <p class="lead">Прив'яжіть Telegram, щоб отримувати відповіді консультанта прямо в месенджері.</p>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    {% if linked %}
+      <div class="form-card" style="margin-inline:0;max-width:560px;">
+        <p>Telegram прив'язано. Відповіді консультанта надходитимуть у ваш чат із ботом.</p>
+        <form method="post" action="{% url 'accounts:telegram_unlink' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-outline mt-4">Відв'язати</button>
+        </form>
+      </div>
+    {% elif link_url %}
+      <div class="form-card" style="margin-inline:0;max-width:560px;">
+        <p>Відкрийте бота, натисніть «Start» — код прив'язки підставиться автоматично. Код діє 15 хвилин.</p>
+        <a href="{{ link_url }}" class="btn btn-primary" target="_blank" rel="noopener">Відкрити бота в Telegram →</a>
+        <p class="mono mt-4">Або надішліть боту: /start {{ code }}</p>
+      </div>
+    {% else %}
+      <form method="post" action="{% url 'accounts:telegram_link' %}" class="form-card" style="margin-inline:0;max-width:560px;">
+        {% csrf_token %}
+        {% if not bot_username %}
+          <p class="form-errors">Бот ще не налаштований адміністратором.</p>
+        {% endif %}
+        <button type="submit" class="btn btn-primary" {% if not bot_username %}disabled{% endif %}>Згенерувати код прив'язки</button>
+      </form>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

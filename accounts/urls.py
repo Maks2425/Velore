@@ -15,4 +15,6 @@ urlpatterns = [
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("roles/", views.UserRoleListView.as_view(), name="role_management"),
     path("roles/<int:pk>/assign/", views.AssignRoleView.as_view(), name="assign_role"),
+    path("telegram/", views.TelegramLinkView.as_view(), name="telegram_link"),
+    path("telegram/unlink/", views.TelegramUnlinkView.as_view(), name="telegram_unlink"),
 ]

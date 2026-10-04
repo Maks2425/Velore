@@ -133,3 +133,7 @@ SUPERADMIN_PASSWORD = os.environ.get("SUPERADMIN_PASSWORD", "")
 # AI-помічник у віджеті чату. Ключ задається лише в .env.
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
+
+# Telegram-бот для прив'язки акаунтів і чату з консультантами. Токен лише в .env.
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_BOT_USERNAME = os.environ.get("TELEGRAM_BOT_USERNAME", "")

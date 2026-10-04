@@ -9,6 +9,7 @@ from django.views.generic import ListView
 
 from .models import ChatMessage, ChatThread
 from .services import AIUnavailable, ai_reply
+from .telegram_bot import notify_consultant_message, notify_new_customer_message
 
 MAX_AI_HISTORY = 12
 MAX_BODY_LENGTH = 1000
@@ -118,6 +119,10 @@ def send_message(request, thread_id):
 
     message = ChatMessage.objects.create(thread=thread, sender=sender, author=request.user, body=body)
     thread.save(update_fields=["consultant", "updated_at"])
+    if sender == ChatMessage.Sender.CONSULTANT:
+        notify_consultant_message(thread, message)
+    else:
+        notify_new_customer_message(thread, message)
     return JsonResponse({"id": message.pk})
 
 

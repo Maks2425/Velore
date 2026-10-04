@@ -17,6 +17,9 @@ class User(AbstractUser):
 
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=32, blank=True)
+    telegram_chat_id = models.BigIntegerField(null=True, blank=True, unique=True)
+    telegram_link_code = models.CharField(max_length=64, blank=True)
+    telegram_link_code_created_at = models.DateTimeField(null=True, blank=True)
 
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]

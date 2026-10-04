@@ -35,8 +35,9 @@
   </div>
 
   <button type="button" class="chat__toggle" data-chat-toggle aria-expanded="false" aria-label="Відкрити чат">
-    <span class="chat__toggle-dot" aria-hidden="true"></span>
-    Чат
+    <svg class="chat__toggle-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+      <path d="M4 5h16v11H9l-5 4V5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    </svg>
   </button>
 </div>
 <script src="{% static 'js/chat.js' %}" defer></script>
