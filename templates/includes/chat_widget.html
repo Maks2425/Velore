@@ -1,0 +1,42 @@
+{% load static %}
+<div class="chat" data-chat data-ai-url="{% url 'chat:ai' %}" data-open-url="{% url 'chat:open_thread' %}" data-thread-base="/chat/thread/" data-authenticated="{% if user.is_authenticated %}true{% else %}false{% endif %}">
+  {% csrf_token %}
+  <div class="chat__panel" data-chat-panel hidden>
+    <header class="chat__header">
+      <div class="chat__tabs" role="tablist">
+        <button type="button" role="tab" class="chat__tab" data-chat-tab="ai" aria-selected="true">AI-помічник</button>
+        <button type="button" role="tab" class="chat__tab" data-chat-tab="agent" aria-selected="false">Консультант</button>
+      </div>
+      <button type="button" class="chat__close" data-chat-toggle aria-label="Закрити чат">×</button>
+    </header>
+
+    <div class="chat__view" data-chat-view="ai">
+      <div class="chat__log" data-chat-log="ai" aria-live="polite"></div>
+      <form class="chat__form" data-chat-form="ai">
+        <textarea rows="2" maxlength="1000" placeholder="Напишіть запитання…" aria-label="Повідомлення AI-помічнику" required></textarea>
+        <button type="submit" class="btn btn-primary">Надіслати</button>
+      </form>
+    </div>
+
+    <div class="chat__view" data-chat-view="agent" hidden>
+      {% if user.is_authenticated %}
+        <p class="chat__status mono" data-chat-status></p>
+        <div class="chat__log" data-chat-log="agent" aria-live="polite"></div>
+        <form class="chat__form" data-chat-form="agent">
+          <textarea rows="2" maxlength="1000" placeholder="Напишіть консультанту…" aria-label="Повідомлення консультанту" required></textarea>
+          <button type="submit" class="btn btn-primary">Надіслати</button>
+        </form>
+      {% else %}
+        <div class="chat__notice">
+          <p>Щоб написати консультанту, <a href="{% url 'accounts:login' %}" class="text-link">увійдіть</a> в акаунт.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <button type="button" class="chat__toggle" data-chat-toggle aria-expanded="false" aria-label="Відкрити чат">
+    <span class="chat__toggle-dot" aria-hidden="true"></span>
+    Чат
+  </button>
+</div>
+<script src="{% static 'js/chat.js' %}" defer></script>

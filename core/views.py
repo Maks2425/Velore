@@ -13,7 +13,7 @@ class HomeView(TemplateView):
         context["featured_products"] = (
             Product.objects.available().with_related().filter(is_featured=True)[:8]
         )
-        context["hero_image_url"] = f"{settings.MEDIA_URL}products/bape-shark-tee.jpg"
+        context["hero_image_url"] = f"{settings.MEDIA_URL}site/runway-hero.jpg"
         return context
 
 

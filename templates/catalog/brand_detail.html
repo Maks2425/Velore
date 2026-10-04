@@ -23,7 +23,7 @@
       <h1>{{ brand.name }}</h1>
       <p class="lead">{{ brand.description }}</p>
     </div>
-    <img src="{{ brand.logo.url }}" alt="Логотип {{ brand.name }}" class="brand-logo-lg">
+    {% include "includes/brand_logo.html" with css_class="brand-logo-lg" %}
   </div>
 </section>
 

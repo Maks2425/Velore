@@ -2,21 +2,33 @@
 {% load static %}
 
 {% block content %}
-<section class="hero" style="--hero-image: url('{{ hero_image_url }}')">
+<section class="hero">
   <div class="hero-inner container">
-    <p class="hero-eyebrow">Нова колекція</p>
-    <h1 class="hero-title">Осінь&nbsp;2026</h1>
-    <p class="hero-text">Bape, Maison Margiela, Balenciaga та Dior — одяг, взуття і парфуми в одному місці.</p>
-    <div class="hero-actions">
-      <a href="{% url 'catalog:shop' %}?gender=men" class="btn btn-light">Чоловікам</a>
-      <a href="{% url 'catalog:shop' %}?gender=women" class="btn btn-light">Жінкам</a>
+    <div class="hero-copy">
+      <p class="mono anim-up" style="--delay: 0.05s">[ Колекція 2026 — Осінь / Зима ]</p>
+      <h1 class="hero-title anim-up" style="--delay: 0.15s">Новий<br><span class="hero-accent">сезон</span></h1>
+      <p class="hero-text anim-up" style="--delay: 0.3s">Bape, Maison Margiela, Balenciaga та Dior — одяг, взуття й парфуми в одному місці.</p>
+      <div class="hero-actions anim-up" style="--delay: 0.45s">
+        <a href="{% url 'catalog:shop' %}?gender=men" class="btn btn-primary">Чоловікам →</a>
+        <a href="{% url 'catalog:shop' %}?gender=women" class="btn btn-outline">Жінкам →</a>
+      </div>
     </div>
+    <figure class="hero-media" aria-hidden="true">
+      <div class="hero-media__image" style="background-image: url('{{ hero_image_url }}')"></div>
+      <figcaption class="mono">Runway — 01</figcaption>
+    </figure>
   </div>
 </section>
 
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    {% for _ in "xxxx" %}{% for brand in brands %}<span>{{ brand.name }}</span>{% endfor %}{% endfor %}
+  </div>
+</div>
+
 <section class="section">
   <div class="container">
-    <div class="gender-grid">
+    <div class="gender-grid reveal-group">
       <a class="gender-card" href="{% url 'catalog:shop' %}?gender=men">
         <span class="gender-card__label">Чоловіки</span>
         <span class="gender-card__cta">Переглянути →</span>
@@ -39,10 +51,10 @@
       <h2>Бренди</h2>
       <a href="{% url 'catalog:brand_list' %}" class="text-link">Усі бренди →</a>
     </div>
-    <div class="brand-grid">
+    <div class="brand-grid reveal-group">
       {% for brand in brands %}
         <a class="brand-card" href="{{ brand.get_absolute_url }}">
-          <img src="{{ brand.logo.url }}" alt="Логотип {{ brand.name }}" loading="lazy" width="160" height="64">
+          {% include "includes/brand_logo.html" %}
           <h3>{{ brand.name }}</h3>
           <p class="text-muted">{{ brand.country }}{% if brand.founded_year %} · {{ brand.founded_year }}{% endif %}</p>
         </a>
@@ -58,7 +70,7 @@
       <h2>Обрані товари</h2>
       <a href="{% url 'catalog:shop' %}" class="text-link">Весь каталог →</a>
     </div>
-    <div class="product-grid">
+    <div class="product-grid reveal-group">
       {% for product in featured_products %}
         {% include "catalog/_product_card.html" %}
       {% endfor %}

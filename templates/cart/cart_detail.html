@@ -3,55 +3,78 @@
 {% block title %}Кошик — Velore{% endblock %}
 
 {% block content %}
-<section class="section">
+<section class="page-head">
   <div class="container">
+    <p class="eyebrow">Крок 1 з 2</p>
     <h1>Кошик</h1>
-
     {% if items %}
-      <table>
-        <thead>
-          <tr>
-            <th>Товар</th>
-            <th>Ціна</th>
-            <th>Кількість</th>
-            <th>Сума</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in items %}
-            <tr>
-              <td>
-                <strong>{{ item.product.brand.name }}</strong> — {{ item.product.name }}
-              </td>
-              <td>{{ item.product.price }} ₴</td>
-              <td>
-                <form action="{% url 'cart:update_item' item.id %}" method="post" style="display:flex;gap:4px;">
-                  {% csrf_token %}
-                  <input type="number" name="quantity" value="{{ item.quantity }}" min="0" max="{{ item.product.stock }}" style="width:70px;min-height:36px;" aria-label="Кількість">
-                  <button type="submit" class="btn btn-outline" style="min-height:36px;padding:4px 10px;">Оновити</button>
-                </form>
-              </td>
-              <td>{{ item.subtotal }} ₴</td>
-              <td>
-                <form action="{% url 'cart:remove_item' item.id %}" method="post">
-                  {% csrf_token %}
-                  <button type="submit" class="btn btn-danger" style="min-height:36px;padding:4px 10px;">Видалити</button>
-                </form>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      <p class="lead">Товарів: {{ cart.total_items }}</p>
+    {% endif %}
+  </div>
+</section>
 
-      <div class="flex-between mt-4">
-        <p style="font-size:1.2rem;">Разом: <strong>{{ cart.total_price }} ₴</strong></p>
-        <a href="{% url 'orders:checkout' %}" class="btn btn-primary">Оформити замовлення</a>
+<section class="section section-tight">
+  <div class="container">
+    {% if items %}
+      <div class="cart-layout">
+        <ul class="cart-items" aria-label="Товари в кошику">
+          {% for item in items %}
+            <li class="cart-item">
+              <a href="{{ item.product.get_absolute_url }}" class="cart-item__media">
+                {% with image=item.product.main_image %}
+                  {% if image %}
+                    <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:item.product.name }}" loading="lazy">
+                  {% else %}
+                    <span class="image-placeholder" aria-hidden="true">{{ item.product.brand.name }}</span>
+                  {% endif %}
+                {% endwith %}
+              </a>
+
+              <div class="cart-item__info">
+                <span class="brand-name">{{ item.product.brand.name }}</span>
+                <h3 class="product-title"><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a></h3>
+                <span class="text-muted mono">{{ item.product.price }} ₴ / шт.</span>
+              </div>
+
+              <form action="{% url 'cart:update_item' item.id %}" method="post" class="qty" aria-label="Кількість">
+                {% csrf_token %}
+                <button type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}" class="qty__btn" aria-label="Зменшити">−</button>
+                <span class="qty__value">{{ item.quantity }}</span>
+                <button type="submit" name="quantity" value="{{ item.quantity|add:'1' }}" class="qty__btn" aria-label="Збільшити" {% if item.quantity >= item.product.stock %}disabled{% endif %}>+</button>
+              </form>
+
+              <span class="cart-item__subtotal">{{ item.subtotal }} ₴</span>
+
+              <form action="{% url 'cart:remove_item' item.id %}" method="post" class="cart-item__remove">
+                {% csrf_token %}
+                <button type="submit" class="link-button mono">Видалити</button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+
+        <aside class="cart-summary" aria-label="Підсумок">
+          <p class="mono">Підсумок</p>
+          <div class="cart-summary__row">
+            <span>Товарів</span>
+            <span>{{ cart.total_items }}</span>
+          </div>
+          <div class="cart-summary__row">
+            <span>Доставка</span>
+            <span>Безкоштовно</span>
+          </div>
+          <div class="cart-summary__total">
+            <span>Разом</span>
+            <strong>{{ cart.total_price }} ₴</strong>
+          </div>
+          <a href="{% url 'orders:checkout' %}" class="btn btn-primary btn-block">Оформити замовлення →</a>
+          <a href="{% url 'catalog:shop' %}" class="text-link">Продовжити покупки</a>
+        </aside>
       </div>
     {% else %}
       <div class="empty-state">
-        <p>Ваш кошик порожній.</p>
-        <a href="{% url 'catalog:brand_list' %}" class="btn btn-outline">Перейти до каталогу</a>
+        <p class="lead">Кошик поки порожній.</p>
+        <a href="{% url 'catalog:shop' %}" class="btn btn-primary">Перейти до магазину →</a>
       </div>
     {% endif %}
   </div>

@@ -8,7 +8,7 @@
     </nav>
 
     <a href="{% url 'core:home' %}" class="logo" aria-label="Velore — на головну">
-      <img src="{% static 'images/velore-logo.png' %}" alt="Velore">
+      {% include "includes/logo.html" %}
     </a>
 
     <nav class="nav-right" aria-label="Бренди та сервіси">
@@ -17,7 +17,11 @@
       <a href="{% url 'orders:order_list' %}" class="icon-link">Замовлення</a>
       {% if user.is_authenticated %}
         {% if user.is_staff or user.is_superuser %}<a href="{% url 'orders:staff_order_list' %}">Керування</a>{% endif %}
-        {% if user.is_superuser %}<a href="{% url 'accounts:role_management' %}">Ролі</a>{% endif %}
+        {% if user.is_staff or user.is_superuser %}<a href="{% url 'chat:inbox' %}">Чати</a>{% endif %}
+        {% if user.is_superuser %}
+          <a href="{% url 'accounts:role_management' %}">Ролі</a>
+          <a href="{% url 'admin:index' %}">Адмінка</a>
+        {% endif %}
         <form action="{% url 'accounts:logout' %}" method="post" class="inline-form">
           {% csrf_token %}
           <button type="submit" class="link-button">Вийти</button>

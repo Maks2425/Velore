@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Чати з клієнтами — Velore{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <p class="eyebrow">Панель консультанта</p>
+    <h1>Відкриті чати</h1>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    {% if threads %}
+      <table>
+        <thead>
+          <tr><th>Клієнт</th><th>Консультант</th><th>Оновлено</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for thread in threads %}
+            <tr>
+              <td>{{ thread.customer.username }}</td>
+              <td>{{ thread.consultant.username|default:"— ще ніхто" }}</td>
+              <td class="mono">{{ thread.updated_at|date:"d.m.Y H:i" }}</td>
+              <td><a href="{% url 'chat:thread' thread.pk %}" class="btn btn-outline">Відкрити →</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="empty-state">
+        <p class="lead">Відкритих чатів немає.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

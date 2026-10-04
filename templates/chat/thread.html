@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Чат з клієнтом {{ thread.customer.username }} — Velore{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <nav class="breadcrumbs"><a href="{% url 'chat:inbox' %}">Чати</a> / Чат #{{ thread.pk }}</nav>
+    <h1>{{ thread.customer.username }}</h1>
+    <p class="lead">Консультант: {{ thread.consultant.username|default:"ще не призначено" }}</p>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    <div class="staff-chat" data-chat data-mode="staff" data-thread-id="{{ thread.pk }}" data-thread-base="/chat/thread/">
+      {% csrf_token %}
+      <p class="chat__status mono" data-chat-status></p>
+      <div class="chat__log chat__log--staff" data-chat-log="agent" aria-live="polite"></div>
+      <form class="chat__form" data-chat-form="agent">
+        <textarea rows="3" maxlength="1000" placeholder="Відповідь клієнту…" aria-label="Відповідь клієнту" required></textarea>
+        <button type="submit" class="btn btn-primary">Надіслати</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

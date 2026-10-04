@@ -6,7 +6,7 @@ class Brand(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=120, unique=True)
     description = models.TextField(blank=True)
-    logo = models.ImageField(upload_to="brands/")
+    logo = models.ImageField(upload_to="brands/", blank=True)
     founded_year = models.PositiveSmallIntegerField(null=True, blank=True)
     country = models.CharField(max_length=80, blank=True)
     is_active = models.BooleanField(default=True)

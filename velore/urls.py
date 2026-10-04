@@ -18,6 +18,7 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     path("cart/", include("cart.urls")),
     path("orders/", include("orders.urls")),
+    path("chat/", include("chat.urls")),
     path("", include("catalog.urls")),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
     path("robots.txt", RobotsTxtView.as_view(), name="robots_txt"),

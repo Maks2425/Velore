@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "catalog",
     "cart",
     "orders",
+    "chat",
     "core",
 ]
 
@@ -128,3 +129,7 @@ SITE_DOMAIN = os.environ.get("DJANGO_SITE_DOMAIN", "localhost:8000")
 SUPERADMIN_EMAIL = os.environ.get("SUPERADMIN_EMAIL", "")
 SUPERADMIN_USERNAME = os.environ.get("SUPERADMIN_USERNAME", "superadmin")
 SUPERADMIN_PASSWORD = os.environ.get("SUPERADMIN_PASSWORD", "")
+
+# AI-помічник у віджеті чату. Ключ задається лише в .env.
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")

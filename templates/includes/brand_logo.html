@@ -1,0 +1,1 @@
+{% if brand.logo %}<span class="brand-logo-frame"><img src="{{ brand.logo.url }}" alt="Логотип {{ brand.name }}" class="{{ css_class|default:'brand-logo' }}" loading="lazy"></span>{% else %}<span class="brand-wordmark {{ css_class|default:'' }}" aria-hidden="true">{{ brand.name }}</span>{% endif %}
