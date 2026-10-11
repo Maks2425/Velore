@@ -35,3 +35,31 @@
     toggle.setAttribute("aria-expanded", String(open));
   });
 })();
+
+(() => {
+  document.querySelectorAll("[data-dropdown]").forEach((root) => {
+    const toggle = root.querySelector("[data-dropdown-toggle]");
+    const panel = root.querySelector("[data-dropdown-panel]");
+    if (!toggle || !panel) return;
+
+    const close = () => {
+      panel.setAttribute("hidden", "");
+      toggle.setAttribute("aria-expanded", "false");
+    };
+
+    toggle.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const open = panel.hasAttribute("hidden");
+      panel.toggleAttribute("hidden", !open);
+      toggle.setAttribute("aria-expanded", String(open));
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!root.contains(event.target)) close();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") close();
+    });
+  });
+})();

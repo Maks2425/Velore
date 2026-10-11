@@ -37,6 +37,15 @@ class ProfileView(LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
 
+    def get_context_data(self, **kwargs):
+        from catalog.models import WishlistItem
+        from orders.models import Order
+
+        context = super().get_context_data(**kwargs)
+        context["order_count"] = Order.objects.filter(user=self.request.user).count()
+        context["wishlist_count"] = WishlistItem.objects.filter(user=self.request.user).count()
+        return context
+
     def form_valid(self, form):
         messages.success(self.request, "Дані профілю оновлено.")
         return super().form_valid(form)

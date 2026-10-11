@@ -7,31 +7,73 @@
 <section class="page-head">
   <div class="container">
     <p class="eyebrow">Акаунт</p>
-    <h1>Профіль</h1>
-    <p class="lead">{{ user.username }} · {{ user.get_role_display_name }}</p>
+    <h1>{{ user.first_name|default:user.username }}</h1>
+    <p class="lead">@{{ user.username }} · {{ user.get_role_display_name }}</p>
   </div>
 </section>
 
 <section class="section section-tight">
   <div class="container">
-    <form method="post" enctype="multipart/form-data" class="form-card" style="margin-inline:0;max-width:480px;">
+    <form method="post" enctype="multipart/form-data" class="profile-grid">
       {% csrf_token %}
-      <div class="profile-avatar">
-        {% if user.avatar %}
-          <img src="{{ user.avatar.url }}" alt="Фото профілю {{ user.username }}">
-        {% else %}
-          <span class="profile-avatar__placeholder" aria-hidden="true">{{ user.username|slice:":1"|upper }}</span>
-        {% endif %}
-      </div>
-      {% for field in form %}
+
+      <div class="profile-card profile-card--identity">
+        <label class="profile-avatar" for="{{ form.avatar.id_for_label }}">
+          {% if user.avatar %}
+            <img src="{{ user.avatar.url }}" alt="Фото профілю {{ user.username }}">
+          {% else %}
+            <span class="profile-avatar__placeholder" aria-hidden="true">{{ user.username|slice:":1"|upper }}</span>
+          {% endif %}
+          <span class="profile-avatar__edit">Змінити фото</span>
+        </label>
+        {{ form.avatar }}
+        {% if form.avatar.errors %}<div class="form-errors">{{ form.avatar.errors }}</div>{% endif %}
+
         <div class="form-group">
-          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-          {{ field }}
-          {% if field.errors %}<div class="form-errors">{{ field.errors }}</div>{% endif %}
+          <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+          {{ form.first_name }}
+          {% if form.first_name.errors %}<div class="form-errors">{{ form.first_name.errors }}</div>{% endif %}
         </div>
-      {% endfor %}
-      <button type="submit" class="btn btn-primary" style="width:100%;">Зберегти</button>
+
+        <dl class="profile-meta">
+          <div><dt>Роль</dt><dd>{{ user.get_role_display_name }}</dd></div>
+          <div><dt>На сайті з</dt><dd>{{ user.date_joined|date:"d.m.Y" }}</dd></div>
+        </dl>
+      </div>
+
+      <div class="profile-card profile-card--contact">
+        <h2>Контактні дані</h2>
+
+        <div class="form-group">
+          <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+          {{ form.email }}
+          {% if form.email.errors %}<div class="form-errors">{{ form.email.errors }}</div>{% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+          {{ form.phone }}
+          {% if form.phone.errors %}<div class="form-errors">{{ form.phone.errors }}</div>{% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Зберегти зміни</button>
+      </div>
     </form>
+
+    <div class="profile-links">
+      <a href="{% url 'orders:order_list' %}" class="profile-link">
+        <span class="profile-link__count">{{ order_count }}</span>
+        <span class="profile-link__label">Мої замовлення →</span>
+      </a>
+      <a href="{% url 'catalog:wishlist' %}" class="profile-link">
+        <span class="profile-link__count">{{ wishlist_count }}</span>
+        <span class="profile-link__label">Обране →</span>
+      </a>
+      <a href="{% url 'accounts:telegram_link' %}" class="profile-link">
+        <span class="profile-link__count">{% if user.telegram_chat_id %}✓{% else %}—{% endif %}</span>
+        <span class="profile-link__label">Telegram →</span>
+      </a>
+    </div>
   </div>
 </section>
 {% endblock %}
