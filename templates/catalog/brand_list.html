@@ -9,9 +9,9 @@
     <div class="section-title">
       <h1>Бренди</h1>
     </div>
-    <div class="brand-grid">
+    <div class="brand-grid" style="--count: {{ brands|length }};">
       {% for brand in brands %}
-        <a class="brand-card" href="{{ brand.get_absolute_url }}">
+        <a class="brand-card" href="{{ brand.get_absolute_url }}" {% if brand.preview_image %}style="--preview-image: url('{{ brand.preview_image }}');"{% endif %}>
           {% include "includes/brand_logo.html" %}
           <h2 style="font-size:1.1rem;">{{ brand.name }}</h2>
           <p class="text-muted">{{ brand.description|truncatewords:18 }}</p>

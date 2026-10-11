@@ -19,6 +19,13 @@
     "price": "{{ product.price }}",
     "availability": "{% if product.in_stock %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
   }
+  {% if product.review_count %}
+  ,"aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ product.average_rating }}",
+    "reviewCount": "{{ product.review_count }}"
+  }
+  {% endif %}
 }
 </script>
 {% endblock %}
@@ -26,26 +33,38 @@
 {% block content %}
 <section class="section">
   <div class="container">
-    <nav aria-label="breadcrumb" class="text-muted" style="font-size:0.85rem;margin-bottom:var(--space-3);">
+    <nav aria-label="breadcrumb" class="breadcrumbs">
       <a href="{% url 'core:home' %}">Головна</a> /
       <a href="{{ product.brand.get_absolute_url }}">{{ product.brand.name }}</a> /
       {{ product.name }}
     </nav>
 
     <div class="two-col">
-      <div class="image-wrap" style="border-radius:var(--radius-lg);">
-        {% with image=product.main_image %}
-          {% if image %}
-            <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}">
-          {% else %}
-            <img src="{% static 'images/velore-logo.png' %}" alt="{{ product.name }}">
-          {% endif %}
-        {% endwith %}
+      <div class="product-media">
+        <div class="image-wrap" style="aspect-ratio:4/5;">
+          {% with image=product.main_image %}
+            {% if image %}
+              <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}" style="width:100%;height:100%;object-fit:cover;">
+            {% else %}
+              <div class="image-placeholder" aria-hidden="true"><span>{{ product.brand.name }}</span></div>
+            {% endif %}
+          {% endwith %}
+        </div>
+        {% if user.is_authenticated %}
+          <form action="{% url 'catalog:toggle_wishlist' product.id %}" method="post" class="wishlist-toggle">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button type="submit" class="wishlist-toggle__btn {% if in_wishlist %}is-active{% endif %}" aria-label="{% if in_wishlist %}Видалити з обраного{% else %}Додати в обране{% endif %}">♥</button>
+          </form>
+        {% endif %}
       </div>
 
       <div>
         <span class="brand-name">{{ product.brand.name }}</span>
         <h1>{{ product.name }}</h1>
+        {% if product.review_count %}
+          <p class="mono">★ {{ product.average_rating }} · {{ product.review_count }} відгук{{ product.review_count|pluralize:",ів" }}</p>
+        {% endif %}
         <p class="price" style="font-size:1.4rem;">{{ product.price }} ₴</p>
         <p>{{ product.description }}</p>
         <p class="text-muted">
@@ -64,6 +83,48 @@
           </form>
         {% endif %}
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container two-col">
+    <div>
+      <div class="section-title"><h2>Відгуки</h2></div>
+      {% if reviews %}
+        <ul class="review-list">
+          {% for review in reviews %}
+            <li class="review">
+              <div class="flex-between">
+                <span class="mono">★ {{ review.rating }}/5 — {{ review.user.username }}</span>
+                <span class="mono text-muted">{{ review.created_at|date:"d.m.Y" }}</span>
+              </div>
+              {% if review.body %}<p>{{ review.body }}</p>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="text-muted">Поки що немає відгуків. Будьте першими!</p>
+      {% endif %}
+    </div>
+
+    <div>
+      {% if user.is_authenticated %}
+        <form method="post" class="form-card" style="margin-inline:0;">
+          {% csrf_token %}
+          <h3>{% if user_review %}Редагувати відгук{% else %}Залишити відгук{% endif %}</h3>
+          {% for field in review_form %}
+            <div class="form-group">
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}<div class="form-errors">{{ field.errors }}</div>{% endif %}
+            </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-primary btn-block">{% if user_review %}Оновити{% else %}Надіслати{% endif %}</button>
+        </form>
+      {% else %}
+        <p class="text-muted"><a href="{% url 'accounts:login' %}" class="text-link">Увійдіть</a>, щоб залишити відгук.</p>
+      {% endif %}
     </div>
   </div>
 </section>

@@ -1,0 +1,14 @@
+Вітаємо, {{ order.shipping_full_name }}!
+
+Ваше замовлення {{ order.number }} у Velore оформлено.
+
+Товари:
+{% for item in order.items.all %}- {{ item.product_name }} × {{ item.quantity }} — {{ item.subtotal }} ₴
+{% endfor %}
+Разом: {{ order.total_price }} ₴
+
+Доставка: {{ order.shipping_address }}, {{ order.shipping_city }}, {{ order.shipping_postal_code }}
+
+Статус замовлення можна відстежити тут: http://{{ site_domain }}{{ order.get_absolute_url }}
+
+— Velore

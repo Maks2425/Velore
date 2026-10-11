@@ -16,7 +16,8 @@
         </div>
       {% endfor %}
       <button type="submit" class="btn btn-primary" style="width:100%;">Увійти</button>
-      <p class="text-muted mt-4" style="text-align:center;">Немає акаунту? <a href="{% url 'accounts:register' %}">Зареєструватися</a></p>
+      <p class="text-muted mt-4" style="text-align:center;"><a href="{% url 'accounts:password_reset' %}">Забули пароль?</a></p>
+      <p class="text-muted" style="text-align:center;">Немає акаунту? <a href="{% url 'accounts:register' %}">Зареєструватися</a></p>
     </form>
   </div>
 </section>

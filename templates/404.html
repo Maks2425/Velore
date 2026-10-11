@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Сторінку не знайдено — Velore{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <p class="eyebrow">404</p>
+    <h1>Сторінку не знайдено</h1>
+    <p class="lead">Можливо, посилання застаріло або адресу введено з помилкою.</p>
+    <a href="{% url 'core:home' %}" class="btn btn-primary mt-4">На головну →</a>
+  </div>
+</section>
+{% endblock %}

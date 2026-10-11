@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
@@ -19,6 +20,13 @@ class Brand(models.Model):
 
     def get_absolute_url(self) -> str:
         return reverse("catalog:brand_detail", kwargs={"brand_slug": self.slug})
+
+    @property
+    def preview_image(self):
+        """First product photo, used for the hover preview on the brand card."""
+        product = self.products.filter(is_active=True).prefetch_related("images").first()
+        image = product.main_image if product else None
+        return image.image.url if image else None
 
 
 class Category(models.Model):
@@ -87,6 +95,15 @@ class Product(models.Model):
     def main_image(self):
         return self.images.first()
 
+    @property
+    def average_rating(self) -> float:
+        ratings = [review.rating for review in self.reviews.all()]
+        return round(sum(ratings) / len(ratings), 1) if ratings else 0.0
+
+    @property
+    def review_count(self) -> int:
+        return self.reviews.count()
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
@@ -99,3 +116,37 @@ class ProductImage(models.Model):
 
     def __str__(self) -> str:
         return f"Image #{self.position} for {self.product.name}"
+
+
+class Review(models.Model):
+    RATING_CHOICES = [(i, str(i)) for i in range(1, 6)]
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="reviews")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reviews")
+    rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
+    body = models.TextField(max_length=2000, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(fields=["product", "user"], name="one_review_per_user_per_product"),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.user} rated {self.product} {self.rating}/5"
+
+
+class WishlistItem(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="wishlist_items")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="wishlisted_by")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(fields=["user", "product"], name="one_wishlist_entry_per_user_per_product"),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.user} ♥ {self.product}"

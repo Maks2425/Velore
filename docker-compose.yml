@@ -1,0 +1,28 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      DJANGO_DEBUG: "False"
+      SQLITE_PATH: /app/data/db.sqlite3
+    volumes:
+      - sqlite-data:/app/data
+      - media-data:/app/media
+
+  telegram-bot:
+    build: .
+    command: python manage.py run_telegram_bot
+    env_file: .env
+    environment:
+      DJANGO_DEBUG: "False"
+      SQLITE_PATH: /app/data/db.sqlite3
+    volumes:
+      - sqlite-data:/app/data
+    depends_on:
+      - web
+
+volumes:
+  sqlite-data:
+  media-data:

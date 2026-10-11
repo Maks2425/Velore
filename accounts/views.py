@@ -10,9 +10,9 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import View
-from django.views.generic import CreateView, ListView, TemplateView
+from django.views.generic import CreateView, ListView, TemplateView, UpdateView
 
-from .forms import RegistrationForm
+from .forms import ProfileForm, RegistrationForm
 from .models import User
 
 
@@ -26,6 +26,20 @@ class RegisterView(CreateView):
         login(self.request, self.object)
         messages.success(self.request, "Вітаємо у Velore! Ваш обліковий запис створено.")
         return response
+
+
+class ProfileView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = ProfileForm
+    template_name = "accounts/profile.html"
+    success_url = reverse_lazy("accounts:profile")
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def form_valid(self, form):
+        messages.success(self.request, "Дані профілю оновлено.")
+        return super().form_valid(form)
 
 
 class SuperAdminRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):

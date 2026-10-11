@@ -6,9 +6,19 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import DetailView, ListView, View
 
 from cart.models import Cart
+from catalog.models import Product
 
+from .emails import send_order_confirmation, send_status_update
 from .forms import CheckoutForm
 from .models import Order, OrderItem, OrderStatusEvent, Payment
+
+
+class InsufficientStock(Exception):
+    """Raised inside the checkout transaction to trigger a rollback."""
+
+    def __init__(self, product_names: list[str]):
+        self.product_names = product_names
+        super().__init__(f"Insufficient stock: {', '.join(product_names)}")
 
 
 @login_required
@@ -21,49 +31,81 @@ def checkout(request):
     if request.method == "POST":
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            with transaction.atomic():
-                order = Order.objects.create(
-                    user=request.user,
-                    shipping_full_name=form.cleaned_data["shipping_full_name"],
-                    shipping_address=form.cleaned_data["shipping_address"],
-                    shipping_city=form.cleaned_data["shipping_city"],
-                    shipping_postal_code=form.cleaned_data["shipping_postal_code"],
-                    shipping_phone=form.cleaned_data["shipping_phone"],
-                    total_price=cart.total_price,
-                    status=Order.Status.PROCESSING,
+            try:
+                order = _place_order(request, cart, form)
+            except InsufficientStock as exc:
+                messages.error(
+                    request,
+                    "Недостатньо залишку для: " + ", ".join(exc.product_names) + ". Оновіть кількість у кошику.",
                 )
-                for item in cart.items.select_related("product"):
-                    OrderItem.objects.create(
-                        order=order,
-                        product=item.product,
-                        product_name=item.product.name,
-                        unit_price=item.product.price,
-                        quantity=item.quantity,
-                    )
+                return redirect("cart:view_cart")
 
-                card_number = form.cleaned_data.get("demo_card_number", "")
-                masked = f"**** **** **** {card_number[-4:]}" if card_number else ""
-                Payment.objects.create(
-                    order=order,
-                    method=form.cleaned_data["payment_method"],
-                    status=Payment.Status.SUCCEEDED,
-                    masked_reference=masked,
-                    amount=cart.total_price,
-                )
-                OrderStatusEvent.objects.create(
-                    order=order,
-                    status=Order.Status.PROCESSING,
-                    note="Замовлення оформлено та оплачено (демо-оплата).",
-                    location="Склад Velore, Київ",
-                )
-                cart.items.all().delete()
-
+            send_order_confirmation(order)
             messages.success(request, f"Замовлення {order.number} успішно створено!")
             return redirect("orders:order_detail", number=order.number)
     else:
         form = CheckoutForm()
 
     return render(request, "orders/checkout.html", {"form": form, "cart": cart})
+
+
+def _place_order(request, cart: Cart, form: CheckoutForm) -> Order:
+    with transaction.atomic():
+        # select_for_update locks the rows against concurrent checkouts so two
+        # customers can't both buy the last unit of a product at once. SQLite
+        # ignores the lock (no row-level locking support) but this is safe to
+        # keep as-is for Postgres/MySQL in production.
+        items = list(cart.items.select_related("product"))
+        locked_products = Product.objects.select_for_update().in_bulk([item.product_id for item in items])
+
+        insufficient = [
+            locked_products[item.product_id].name
+            for item in items
+            if locked_products[item.product_id].stock < item.quantity
+        ]
+        if insufficient:
+            raise InsufficientStock(insufficient)
+
+        order = Order.objects.create(
+            user=request.user,
+            shipping_full_name=form.cleaned_data["shipping_full_name"],
+            shipping_address=form.cleaned_data["shipping_address"],
+            shipping_city=form.cleaned_data["shipping_city"],
+            shipping_postal_code=form.cleaned_data["shipping_postal_code"],
+            shipping_phone=form.cleaned_data["shipping_phone"],
+            total_price=cart.total_price,
+            status=Order.Status.PROCESSING,
+        )
+        for item in items:
+            product = locked_products[item.product_id]
+            OrderItem.objects.create(
+                order=order,
+                product=product,
+                product_name=product.name,
+                unit_price=product.price,
+                quantity=item.quantity,
+            )
+            product.stock -= item.quantity
+            product.save(update_fields=["stock"])
+
+        card_number = form.cleaned_data.get("demo_card_number", "")
+        masked = f"**** **** **** {card_number[-4:]}" if card_number else ""
+        Payment.objects.create(
+            order=order,
+            method=form.cleaned_data["payment_method"],
+            status=Payment.Status.SUCCEEDED,
+            masked_reference=masked,
+            amount=cart.total_price,
+        )
+        OrderStatusEvent.objects.create(
+            order=order,
+            status=Order.Status.PROCESSING,
+            note="Замовлення оформлено та оплачено (демо-оплата).",
+            location="Склад Velore, Київ",
+        )
+        cart.items.all().delete()
+
+    return order
 
 
 class OrderListView(LoginRequiredMixin, ListView):
@@ -127,6 +169,7 @@ class UpdateOrderStatusView(StaffRequiredMixin, View):
         order.status = new_status
         order.save(update_fields=["status", "updated_at"])
         OrderStatusEvent.objects.create(order=order, status=new_status, note=note, location=location)
+        send_status_update(order)
 
         messages.success(request, f"Статус замовлення {order.number} оновлено.")
         return redirect("orders:staff_order_list")

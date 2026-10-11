@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Профіль — Velore{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <p class="eyebrow">Акаунт</p>
+    <h1>Профіль</h1>
+    <p class="lead">{{ user.username }} · {{ user.get_role_display_name }}</p>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    <form method="post" class="form-card" style="margin-inline:0;max-width:480px;">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<div class="form-errors">{{ field.errors }}</div>{% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary" style="width:100%;">Зберегти</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

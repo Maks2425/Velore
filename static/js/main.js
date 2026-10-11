@@ -23,3 +23,15 @@
 
   groups.forEach((group) => observer.observe(group));
 })();
+
+(() => {
+  const toggle = document.querySelector("[data-nav-toggle]");
+  const panel = document.querySelector("[data-nav-panel]");
+  if (!toggle || !panel) return;
+
+  toggle.addEventListener("click", () => {
+    const open = !panel.classList.contains("is-open");
+    panel.classList.toggle("is-open", open);
+    toggle.setAttribute("aria-expanded", String(open));
+  });
+})();

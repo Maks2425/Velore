@@ -43,6 +43,7 @@
             {% include "catalog/_product_card.html" %}
           {% endfor %}
         </div>
+        {% include "includes/pagination.html" %}
       {% else %}
         <div class="empty-state">
           <p>За цими фільтрами товарів цього бренду не знайдено.</p>

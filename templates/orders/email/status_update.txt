@@ -1,0 +1,7 @@
+Вітаємо, {{ order.shipping_full_name }}!
+
+Статус вашого замовлення {{ order.number }} змінено на «{{ order.get_status_display }}».
+
+Деталі: http://{{ site_domain }}{{ order.get_absolute_url }}
+
+— Velore

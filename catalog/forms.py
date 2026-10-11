@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Brand, Category, Product
+from .models import Brand, Category, Product, Review
 
 
 class ProductFilterForm(forms.Form):
@@ -49,3 +49,13 @@ class ProductFilterForm(forms.Form):
             "name": "name",
         }[data.get("sort") or "newest"]
         return queryset.order_by(ordering)
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ("rating", "body")
+        widgets = {
+            "rating": forms.Select(choices=Review.RATING_CHOICES),
+            "body": forms.Textarea(attrs={"rows": 3, "placeholder": "Поділіться враженням про товар (необов'язково)"}),
+        }

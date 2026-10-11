@@ -1,16 +1,25 @@
 {% load static %}
 <article class="product-card">
-  <a href="{{ product.get_absolute_url }}" class="image-wrap">
-    {% with image=product.main_image %}
-      {% if image %}
-        <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}" loading="lazy" width="480" height="600">
-      {% else %}
-        <div class="image-placeholder" aria-hidden="true">
-          <span>{{ product.brand.name }}</span>
-        </div>
-      {% endif %}
-    {% endwith %}
-  </a>
+  <div class="product-media">
+    <a href="{{ product.get_absolute_url }}" class="image-wrap">
+      {% with image=product.main_image %}
+        {% if image %}
+          <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}" loading="lazy" width="480" height="600">
+        {% else %}
+          <div class="image-placeholder" aria-hidden="true">
+            <span>{{ product.brand.name }}</span>
+          </div>
+        {% endif %}
+      {% endwith %}
+    </a>
+    {% if user.is_authenticated %}
+      <form action="{% url 'catalog:toggle_wishlist' product.id %}" method="post" class="wishlist-toggle">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <button type="submit" class="wishlist-toggle__btn {% if product.id in wishlist_ids %}is-active{% endif %}" aria-label="{% if product.id in wishlist_ids %}Видалити з обраного{% else %}Додати в обране{% endif %}">♥</button>
+      </form>
+    {% endif %}
+  </div>
   <div class="body">
     <span class="brand-name">{{ product.brand.name }}</span>
     <h3 class="product-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>

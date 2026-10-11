@@ -51,9 +51,9 @@
       <h2>Бренди</h2>
       <a href="{% url 'catalog:brand_list' %}" class="text-link">Усі бренди →</a>
     </div>
-    <div class="brand-grid reveal-group">
+    <div class="brand-grid reveal-group" style="--count: {{ brands|length }};">
       {% for brand in brands %}
-        <a class="brand-card" href="{{ brand.get_absolute_url }}">
+        <a class="brand-card" href="{{ brand.get_absolute_url }}" {% if brand.preview_image %}style="--preview-image: url('{{ brand.preview_image }}');"{% endif %}>
           {% include "includes/brand_logo.html" %}
           <h3>{{ brand.name }}</h3>
           <p class="text-muted">{{ brand.country }}{% if brand.founded_year %} · {{ brand.founded_year }}{% endif %}</p>

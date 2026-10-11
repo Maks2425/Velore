@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Brand, Category, Product, ProductImage
+from .models import Brand, Category, Product, ProductImage, Review, WishlistItem
 
 
 class ProductImageInline(admin.TabularInline):
@@ -32,3 +32,18 @@ class ProductAdmin(admin.ModelAdmin):
     autocomplete_fields = ("brand", "category")
     inlines = [ProductImageInline]
     list_select_related = ("brand", "category")
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ("product", "user", "rating", "created_at")
+    list_filter = ("rating",)
+    search_fields = ("product__name", "user__username")
+    list_select_related = ("product", "user")
+
+
+@admin.register(WishlistItem)
+class WishlistItemAdmin(admin.ModelAdmin):
+    list_display = ("user", "product", "created_at")
+    search_fields = ("user__username", "product__name")
+    list_select_related = ("user", "product")

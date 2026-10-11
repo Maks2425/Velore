@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Обране — Velore{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container">
+    <p class="eyebrow">Акаунт</p>
+    <h1>Обране</h1>
+    {% if items %}<p class="lead">Товарів: {{ items|length }}</p>{% endif %}
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    {% if items %}
+      <div class="product-grid">
+        {% for item in items %}
+          {% with product=item.product %}
+            {% include "catalog/_product_card.html" %}
+          {% endwith %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p class="lead">Поки що нічого не додано в обране.</p>
+        <a href="{% url 'catalog:shop' %}" class="btn btn-primary">До магазину →</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
