@@ -1546,3 +1546,39 @@ th {
   margin: 8px 0 0;
   color: var(--ink-soft);
 }
+
+/* ---------- Profile avatar ---------- */
+
+.profile-avatar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.profile-avatar img,
+.profile-avatar__placeholder {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line);
+}
+
+.profile-avatar__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.nav-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: middle;
+  margin-right: 6px;
+}

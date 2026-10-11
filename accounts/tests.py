@@ -1,9 +1,18 @@
+import shutil
+import tempfile
+
 from django.contrib.auth import get_user_model
 from django.core import mail
-from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 User = get_user_model()
+
+TINY_GIF = (
+    b"GIF89a\x01\x00\x01\x00\x80\x00\x00\x00\x00\x00\xff\xff\xff!\xf9\x04\x01\x00"
+    b"\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;"
+)
 
 
 class RegistrationTests(TestCase):
@@ -53,6 +62,23 @@ class ProfileTests(TestCase):
         self.client.logout()
         response = self.client.get(reverse("accounts:profile"))
         self.assertEqual(response.status_code, 302)
+
+    def test_user_can_update_name_and_avatar(self):
+        media_root = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, media_root, ignore_errors=True)
+        avatar = SimpleUploadedFile("avatar.gif", TINY_GIF, content_type="image/gif")
+
+        with override_settings(MEDIA_ROOT=media_root):
+            self.client.post(reverse("accounts:profile"), {
+                "first_name": "Максим",
+                "email": "old@example.com",
+                "phone": "",
+                "avatar": avatar,
+            })
+
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.first_name, "Максим")
+        self.assertTrue(self.user.avatar.name)
 
 
 class RoleAssignmentTests(TestCase):

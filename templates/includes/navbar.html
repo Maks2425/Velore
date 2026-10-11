@@ -35,7 +35,10 @@
             <a href="{% url 'admin:index' %}">Адмінка</a>
           {% endif %}
           <a href="{% url 'accounts:telegram_link' %}">Telegram</a>
-          <a href="{% url 'accounts:profile' %}">Профіль</a>
+          <a href="{% url 'accounts:profile' %}">
+            {% if user.avatar %}<img src="{{ user.avatar.url }}" alt="" class="nav-avatar">{% endif %}
+            {{ user.first_name|default:user.username }}
+          </a>
           <form action="{% url 'accounts:logout' %}" method="post" class="inline-form">
             {% csrf_token %}
             <button type="submit" class="link-button">Вийти</button>

@@ -22,7 +22,8 @@ class RegistrationForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ("email", "phone")
+        fields = ("first_name", "email", "phone", "avatar")
+        labels = {"first_name": "Ім'я"}
 
     def clean_email(self):
         email = self.cleaned_data["email"]

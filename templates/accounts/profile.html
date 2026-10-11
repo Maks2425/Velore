@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Профіль — Velore{% endblock %}
 
@@ -13,8 +14,15 @@
 
 <section class="section section-tight">
   <div class="container">
-    <form method="post" class="form-card" style="margin-inline:0;max-width:480px;">
+    <form method="post" enctype="multipart/form-data" class="form-card" style="margin-inline:0;max-width:480px;">
       {% csrf_token %}
+      <div class="profile-avatar">
+        {% if user.avatar %}
+          <img src="{{ user.avatar.url }}" alt="Фото профілю {{ user.username }}">
+        {% else %}
+          <span class="profile-avatar__placeholder" aria-hidden="true">{{ user.username|slice:":1"|upper }}</span>
+        {% endif %}
+      </div>
       {% for field in form %}
         <div class="form-group">
           <label for="{{ field.id_for_label }}">{{ field.label }}</label>
