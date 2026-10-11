@@ -1,32 +1,33 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from .models import Brand, Category, Product, Review
 
 
 class ProductFilterForm(forms.Form):
     SORT_CHOICES = [
-        ("newest", "Новинки"),
-        ("price_asc", "Ціна: від низької"),
-        ("price_desc", "Ціна: від високої"),
-        ("name", "Назва А–Я"),
+        ("newest", _("Новинки")),
+        ("price_asc", _("Ціна: від низької")),
+        ("price_desc", _("Ціна: від високої")),
+        ("name", _("Назва А–Я")),
     ]
 
     q = forms.CharField(required=False, max_length=100)
     gender = forms.ChoiceField(
         required=False,
-        choices=[("", "Усі")] + list(Product.Gender.choices),
+        choices=[("", _("Усі"))] + list(Product.Gender.choices),
     )
     category = forms.ModelChoiceField(
         required=False,
         queryset=Category.objects.all(),
         to_field_name="slug",
-        empty_label="Усі категорії",
+        empty_label=_("Усі категорії"),
     )
     brand = forms.ModelChoiceField(
         required=False,
         queryset=Brand.objects.filter(is_active=True),
         to_field_name="slug",
-        empty_label="Усі бренди",
+        empty_label=_("Усі бренди"),
     )
     sort = forms.ChoiceField(required=False, choices=SORT_CHOICES, initial="newest")
 
@@ -57,5 +58,5 @@ class ReviewForm(forms.ModelForm):
         fields = ("rating", "body")
         widgets = {
             "rating": forms.Select(choices=Review.RATING_CHOICES),
-            "body": forms.Textarea(attrs={"rows": 3, "placeholder": "Поділіться враженням про товар (необов'язково)"}),
+            "body": forms.Textarea(attrs={"rows": 3, "placeholder": _("Поділіться враженням про товар (необов'язково)")}),
         }

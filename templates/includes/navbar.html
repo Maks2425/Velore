@@ -1,35 +1,35 @@
-{% load static %}
-<a href="#main-content" class="skip-link">Перейти до основного контенту</a>
+{% load static i18n %}
+<a href="#main-content" class="skip-link">{% translate "Перейти до основного контенту" %}</a>
 <header class="site-header">
   <div class="container header-row">
-    <nav class="nav-left" aria-label="Основна навігація">
-      <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="Відкрити меню">
+    <nav class="nav-left" aria-label="{% translate "Основна навігація" %}">
+      <button type="button" class="nav-toggle" data-nav-toggle aria-expanded="false" aria-controls="site-nav" aria-label="{% translate "Відкрити меню" %}">
         <span></span><span></span><span></span>
       </button>
-      <a href="{% url 'catalog:shop' %}?gender=men">Чоловікам</a>
-      <a href="{% url 'catalog:shop' %}?gender=women">Жінкам</a>
+      <a href="{% url 'catalog:shop' %}?gender=men">{% translate "Чоловікам" %}</a>
+      <a href="{% url 'catalog:shop' %}?gender=women">{% translate "Жінкам" %}</a>
     </nav>
 
-    <a href="{% url 'core:home' %}" class="logo" aria-label="Velore — на головну">
+    <a href="{% url 'core:home' %}" class="logo" aria-label="{% blocktranslate %}Velore — на головну{% endblocktranslate %}">
       {% include "includes/logo.html" %}
     </a>
 
     <div class="nav-right-group" id="site-nav" data-nav-panel>
       <form action="{% url 'catalog:shop' %}" method="get" class="nav-search" role="search">
-        <input type="search" name="q" placeholder="Пошук товарів…" aria-label="Пошук товарів" value="{{ request.GET.q }}">
+        <input type="search" name="q" placeholder="{% translate "Пошук товарів…" %}" aria-label="{% translate "Пошук товарів" %}" value="{{ request.GET.q }}">
       </form>
 
-      <nav class="nav-right" aria-label="Бренди та сервіси">
-        <a href="{% url 'catalog:brand_list' %}">Бренди</a>
-        <a href="{% url 'catalog:shop' %}">Магазин</a>
+      <nav class="nav-right" aria-label="{% translate "Бренди та сервіси" %}">
+        <a href="{% url 'catalog:brand_list' %}">{% translate "Бренди" %}</a>
+        <a href="{% url 'catalog:shop' %}">{% translate "Магазин" %}</a>
         {% if user.is_authenticated %}
-          <a href="{% url 'catalog:wishlist' %}" class="cart-link" aria-label="Обране, товарів: {{ nav_wishlist_count }}">
-            Обране
+          <a href="{% url 'catalog:wishlist' %}" class="cart-link" aria-label="{% blocktranslate %}Обране, товарів: {{ nav_wishlist_count }}{% endblocktranslate %}">
+            {% translate "Обране" %}
             {% if nav_wishlist_count %}<span class="cart-count">{{ nav_wishlist_count }}</span>{% endif %}
           </a>
         {% endif %}
-        <a href="{% url 'cart:view_cart' %}" class="cart-link" aria-label="Кошик, товарів: {{ nav_cart_count }}">
-          Кошик
+        <a href="{% url 'cart:view_cart' %}" class="cart-link" aria-label="{% blocktranslate %}Кошик, товарів: {{ nav_cart_count }}{% endblocktranslate %}">
+          {% translate "Кошик" %}
           {% if nav_cart_count %}<span class="cart-count">{{ nav_cart_count }}</span>{% endif %}
         </a>
 
@@ -40,27 +40,50 @@
               {{ user.first_name|default:user.username }}
             </button>
             <div class="account-menu__panel" data-dropdown-panel hidden>
-              <a href="{% url 'accounts:profile' %}">Профіль</a>
-              <a href="{% url 'orders:order_list' %}">Замовлення</a>
+              <a href="{% url 'accounts:profile' %}">{% translate "Профіль" %}</a>
+              <a href="{% url 'orders:order_list' %}">{% translate "Замовлення" %}</a>
               <a href="{% url 'accounts:telegram_link' %}">Telegram</a>
               {% if user.is_staff or user.is_superuser %}
                 <div class="account-menu__divider"></div>
-                <a href="{% url 'orders:staff_order_list' %}">Керування замовленнями</a>
-                <a href="{% url 'chat:inbox' %}">Чати з клієнтами</a>
+                <a href="{% url 'orders:staff_order_list' %}">{% translate "Керування замовленнями" %}</a>
+                <a href="{% url 'chat:inbox' %}">{% translate "Чати з клієнтами" %}</a>
               {% endif %}
               {% if user.is_superuser %}
-                <a href="{% url 'accounts:role_management' %}">Ролі</a>
-                <a href="{% url 'admin:index' %}">Адмінка</a>
+                <a href="{% url 'accounts:role_management' %}">{% translate "Ролі" %}</a>
+                <a href="{% url 'admin:index' %}">{% translate "Адмінка" %}</a>
               {% endif %}
+              <div class="account-menu__divider"></div>
+              <div class="account-menu__lang">
+                {% get_current_language as CURRENT_LANGUAGE %}
+                {% for code, label in LANGUAGES %}
+                  <form action="{% url 'core:set_language' %}" method="post" class="inline-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="language" value="{{ code }}">
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    <button type="submit" class="link-button {% if code == CURRENT_LANGUAGE %}is-active{% endif %}">{{ code|upper }}</button>
+                  </form>
+                {% endfor %}
+              </div>
               <div class="account-menu__divider"></div>
               <form action="{% url 'accounts:logout' %}" method="post" class="inline-form">
                 {% csrf_token %}
-                <button type="submit" class="link-button">Вийти</button>
+                <button type="submit" class="link-button">{% translate "Вийти" %}</button>
               </form>
             </div>
           </div>
         {% else %}
-          <a href="{% url 'accounts:login' %}">Увійти</a>
+          <div class="lang-switch">
+            {% get_current_language as CURRENT_LANGUAGE %}
+            {% for code, label in LANGUAGES %}
+              <form action="{% url 'core:set_language' %}" method="post" class="inline-form">
+                {% csrf_token %}
+                <input type="hidden" name="language" value="{{ code }}">
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="lang-switch__btn {% if code == CURRENT_LANGUAGE %}is-active{% endif %}">{{ code|upper }}</button>
+              </form>
+            {% endfor %}
+          </div>
+          <a href="{% url 'accounts:login' %}">{% translate "Увійти" %}</a>
         {% endif %}
       </nav>
     </div>

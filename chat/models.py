@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class ChatThread(models.Model):
@@ -26,8 +27,8 @@ class ChatThread(models.Model):
 
 class ChatMessage(models.Model):
     class Sender(models.TextChoices):
-        CUSTOMER = "customer", "Клієнт"
-        CONSULTANT = "consultant", "Консультант"
+        CUSTOMER = "customer", _("Клієнт")
+        CONSULTANT = "consultant", _("Консультант")
 
     thread = models.ForeignKey(ChatThread, on_delete=models.CASCADE, related_name="messages")
     sender = models.CharField(max_length=20, choices=Sender.choices)

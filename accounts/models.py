@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
@@ -10,14 +11,19 @@ class User(AbstractUser):
     """
 
     class Role(models.TextChoices):
-        CUSTOMER = "customer", "Клієнт"
-        CONSULTANT = "consultant", "Консультант"
-        ADMIN = "admin", "Адмін"
-        SUPERADMIN = "superadmin", "Супер Адмін"
+        CUSTOMER = "customer", _("Клієнт")
+        CONSULTANT = "consultant", _("Консультант")
+        ADMIN = "admin", _("Адмін")
+        SUPERADMIN = "superadmin", _("Супер Адмін")
+
+    class Language(models.TextChoices):
+        UKRAINIAN = "uk", "Українська"
+        ENGLISH = "en", "English"
 
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=32, blank=True)
     avatar = models.ImageField(upload_to="avatars/", blank=True)
+    language = models.CharField(max_length=5, choices=Language.choices, default=Language.UKRAINIAN)
     telegram_chat_id = models.BigIntegerField(null=True, blank=True, unique=True)
     telegram_link_code = models.CharField(max_length=64, blank=True)
     telegram_link_code_created_at = models.DateTimeField(null=True, blank=True)

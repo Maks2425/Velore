@@ -1,28 +1,28 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static i18n %}
 
 {% block content %}
 <section class="hero">
   <div class="hero-inner container">
     <div class="hero-copy">
-      <p class="mono anim-up" style="--delay: 0.05s">[ Колекція 2026 — Осінь / Зима ]</p>
-      <h1 class="hero-title anim-up" style="--delay: 0.15s">Новий<br><span class="hero-accent">сезон</span></h1>
-      <p class="hero-text anim-up" style="--delay: 0.3s">Bape, Maison Margiela, Balenciaga та Dior — одяг, взуття й парфуми в одному місці.</p>
+      <p class="mono anim-up" style="--delay: 0.05s">[ {% translate "Колекція 2026 — Осінь / Зима" %} ]</p>
+      <h1 class="hero-title anim-up" style="--delay: 0.15s">{% translate "Новий" %}<br><span class="hero-accent">{% translate "сезон" %}</span></h1>
+      <p class="hero-text anim-up" style="--delay: 0.3s">{% blocktranslate %}Bape, Maison Margiela, Balenciaga та Dior — одяг, взуття й парфуми в одному місці.{% endblocktranslate %}</p>
       <div class="hero-actions anim-up" style="--delay: 0.45s">
-        <a href="{% url 'catalog:shop' %}?gender=men" class="btn btn-primary">Чоловікам →</a>
-        <a href="{% url 'catalog:shop' %}?gender=women" class="btn btn-outline">Жінкам →</a>
+        <a href="{% url 'catalog:shop' %}?gender=men" class="btn btn-primary">{% translate "Чоловікам" %} →</a>
+        <a href="{% url 'catalog:shop' %}?gender=women" class="btn btn-outline">{% translate "Жінкам" %} →</a>
       </div>
     </div>
     <figure class="hero-media" aria-hidden="true">
       <div class="hero-media__image" style="background-image: url('{{ hero_image_url }}')"></div>
-      <figcaption class="mono">Runway — 01</figcaption>
+      <figcaption class="mono">{% translate "Подіум" %} — 01</figcaption>
     </figure>
   </div>
 </section>
 
 <div class="marquee" aria-hidden="true">
   <div class="marquee__track">
-    {% for _ in "xxxx" %}{% for brand in brands %}<span>{{ brand.name }}</span>{% endfor %}{% endfor %}
+    {% for i in "xxxx" %}{% for brand in brands %}<span>{{ brand.name }}</span>{% endfor %}{% endfor %}
   </div>
 </div>
 
@@ -30,16 +30,16 @@
   <div class="container">
     <div class="gender-grid reveal-group">
       <a class="gender-card" href="{% url 'catalog:shop' %}?gender=men">
-        <span class="gender-card__label">Чоловіки</span>
-        <span class="gender-card__cta">Переглянути →</span>
+        <span class="gender-card__label">{% translate "Чоловіки" %}</span>
+        <span class="gender-card__cta">{% translate "Переглянути" %} →</span>
       </a>
       <a class="gender-card" href="{% url 'catalog:shop' %}?gender=women">
-        <span class="gender-card__label">Жінки</span>
-        <span class="gender-card__cta">Переглянути →</span>
+        <span class="gender-card__label">{% translate "Жінки" %}</span>
+        <span class="gender-card__cta">{% translate "Переглянути" %} →</span>
       </a>
       <a class="gender-card" href="{% url 'catalog:shop' %}?category=perfume">
-        <span class="gender-card__label">Парфуми</span>
-        <span class="gender-card__cta">Переглянути →</span>
+        <span class="gender-card__label">{% translate "Парфуми" %}</span>
+        <span class="gender-card__cta">{% translate "Переглянути" %} →</span>
       </a>
     </div>
   </div>
@@ -48,8 +48,8 @@
 <section class="section">
   <div class="container">
     <div class="section-title">
-      <h2>Бренди</h2>
-      <a href="{% url 'catalog:brand_list' %}" class="text-link">Усі бренди →</a>
+      <h2>{% translate "Бренди" %}</h2>
+      <a href="{% url 'catalog:brand_list' %}" class="text-link">{% translate "Усі бренди" %} →</a>
     </div>
     <div class="brand-grid reveal-group" style="--count: {{ brands|length }};">
       {% for brand in brands %}
@@ -67,8 +67,8 @@
 <section class="section">
   <div class="container">
     <div class="section-title">
-      <h2>Обрані товари</h2>
-      <a href="{% url 'catalog:shop' %}" class="text-link">Весь каталог →</a>
+      <h2>{% translate "Обрані товари" %}</h2>
+      <a href="{% url 'catalog:shop' %}" class="text-link">{% translate "Весь каталог" %} →</a>
     </div>
     <div class="product-grid reveal-group">
       {% for product in featured_products %}

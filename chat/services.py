@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.translation import get_language
 from openai import OpenAI
 
 from catalog.models import Brand, Category
@@ -8,12 +9,16 @@ class AIUnavailable(Exception):
     pass
 
 
+_LANGUAGE_NAMES = {"uk": "українською", "en": "in English"}
+
+
 def build_system_prompt() -> str:
     brands = ", ".join(Brand.objects.filter(is_active=True).values_list("name", flat=True))
     categories = ", ".join(Category.objects.values_list("name", flat=True))
+    language_instruction = _LANGUAGE_NAMES.get(get_language(), _LANGUAGE_NAMES["uk"])
     return (
         "Ти — помічник інтернет-магазину Velore (брендовий одяг, взуття та парфуми). "
-        "Відповідай українською, коротко і ввічливо. "
+        f"Відповідай {language_instruction}, коротко і ввічливо. "
         f"Бренди в магазині: {brands}. Категорії: {categories}. "
         "Клієнт може оформити замовлення в кошику; оплата в магазині демонстраційна; "
         "статус замовлення видно в розділі «Замовлення». "

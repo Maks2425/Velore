@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 <article class="product-card">
   <div class="product-media">
     <a href="{{ product.get_absolute_url }}" class="image-wrap">
@@ -16,7 +16,7 @@
       <form action="{% url 'catalog:toggle_wishlist' product.id %}" method="post" class="wishlist-toggle">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.get_full_path }}">
-        <button type="submit" class="wishlist-toggle__btn {% if product.id in wishlist_ids %}is-active{% endif %}" aria-label="{% if product.id in wishlist_ids %}Видалити з обраного{% else %}Додати в обране{% endif %}">♥</button>
+        <button type="submit" class="wishlist-toggle__btn {% if product.id in wishlist_ids %}is-active{% endif %}" aria-label="{% if product.id in wishlist_ids %}{% translate "Видалити з обраного" %}{% else %}{% translate "Додати в обране" %}{% endif %}">♥</button>
       </form>
     {% endif %}
   </div>
@@ -27,7 +27,7 @@
     <form action="{% url 'cart:add_to_cart' product.id %}" method="post" class="card-action">
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ request.get_full_path }}">
-      <button type="submit" class="btn btn-outline btn-block">Додати в кошик</button>
+      <button type="submit" class="btn btn-outline btn-block">{% translate "Додати в кошик" %}</button>
     </form>
   </div>
 </article>

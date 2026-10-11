@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_GET, require_POST
 from django.views.generic import ListView
 
@@ -51,9 +52,9 @@ def ai_chat(request):
     try:
         reply = ai_reply(history)
     except AIUnavailable:
-        return JsonResponse({"error": "AI-помічник тимчасово недоступний."}, status=503)
+        return JsonResponse({"error": _("AI-помічник тимчасово недоступний.")}, status=503)
     except Exception:
-        return JsonResponse({"error": "Не вдалося отримати відповідь. Спробуйте пізніше."}, status=502)
+        return JsonResponse({"error": _("Не вдалося отримати відповідь. Спробуйте пізніше.")}, status=502)
 
     return JsonResponse({"reply": reply})
 
@@ -102,12 +103,12 @@ def send_message(request, thread_id):
     if not _can_access(request.user, thread):
         return JsonResponse({"error": "forbidden"}, status=403)
     if not thread.is_open:
-        return JsonResponse({"error": "Чат закрито."}, status=409)
+        return JsonResponse({"error": _("Чат закрито.")}, status=409)
 
     payload = _parse_json(request)
     body = str((payload or {}).get("body", "")).strip()
     if not body or len(body) > MAX_BODY_LENGTH:
-        return HttpResponseBadRequest("Повідомлення порожнє або занадто довге.")
+        return HttpResponseBadRequest(_("Повідомлення порожнє або занадто довге."))
 
     is_staff_reply = _is_consultant(request.user) and request.user.pk != thread.customer_id
     if is_staff_reply:

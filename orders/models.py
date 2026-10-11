@@ -1,18 +1,19 @@
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 from catalog.models import Product
 
 
 class Order(models.Model):
     class Status(models.TextChoices):
-        PENDING_PAYMENT = "pending_payment", "Очікує оплати"
-        PROCESSING = "processing", "Комплектується"
-        SHIPPED = "shipped", "Відправлено"
-        OUT_FOR_DELIVERY = "out_for_delivery", "У дорозі до вас"
-        DELIVERED = "delivered", "Доставлено"
-        CANCELLED = "cancelled", "Скасовано"
+        PENDING_PAYMENT = "pending_payment", _("Очікує оплати")
+        PROCESSING = "processing", _("Комплектується")
+        SHIPPED = "shipped", _("Відправлено")
+        OUT_FOR_DELIVERY = "out_for_delivery", _("У дорозі до вас")
+        DELIVERED = "delivered", _("Доставлено")
+        CANCELLED = "cancelled", _("Скасовано")
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="orders")
     number = models.CharField(max_length=20, unique=True, editable=False)
@@ -85,13 +86,13 @@ class Payment(models.Model):
     """
 
     class Method(models.TextChoices):
-        MOCK_CARD = "mock_card", "Банківська картка (демо)"
-        MOCK_WALLET = "mock_wallet", "Velore Pay (демо-гаманець)"
-        CASH_ON_DELIVERY = "cash_on_delivery", "Оплата при отриманні"
+        MOCK_CARD = "mock_card", _("Банківська картка (демо)")
+        MOCK_WALLET = "mock_wallet", _("Velore Pay (демо-гаманець)")
+        CASH_ON_DELIVERY = "cash_on_delivery", _("Оплата при отриманні")
 
     class Status(models.TextChoices):
-        SUCCEEDED = "succeeded", "Успішно"
-        FAILED = "failed", "Відхилено"
+        SUCCEEDED = "succeeded", _("Успішно")
+        FAILED = "failed", _("Відхилено")
 
     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name="payment")
     method = models.CharField(max_length=20, choices=Method.choices)

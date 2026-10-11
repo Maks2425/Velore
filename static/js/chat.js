@@ -3,7 +3,7 @@
 
   const csrfToken = (root) => root.querySelector("input[name=csrfmiddlewaretoken]")?.value || "";
 
-  async function postJson(url, payload, token) {
+  async function postJson(url, payload, token, fallbackError) {
     const response = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-CSRFToken": token },
@@ -11,7 +11,7 @@
       credentials: "same-origin",
     });
     const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || "Сталася помилка. Спробуйте ще раз.");
+    if (!response.ok) throw new Error(data.error || fallbackError);
     return data;
   }
 
@@ -36,7 +36,7 @@
     const url = root.dataset.aiUrl;
     const history = [];
 
-    appendBubble(log, "Привіт! Я помічник Velore. Питайте про бренди, розміри, замовлення чи магазин.", "bot");
+    appendBubble(log, root.dataset.i18nGreeting, "bot");
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -45,10 +45,10 @@
       input.value = "";
       appendBubble(log, text, "me");
       history.push({ role: "user", content: text });
-      const pending = appendBubble(log, "Думаю…", "bot");
+      const pending = appendBubble(log, root.dataset.i18nThinking, "bot");
       pending.classList.add("is-pending");
       try {
-        const data = await postJson(url, { messages: history.slice(-12) }, csrfToken(root));
+        const data = await postJson(url, { messages: history.slice(-12) }, csrfToken(root), root.dataset.i18nGenericError);
         history.push({ role: "assistant", content: data.reply });
         pending.textContent = data.reply;
       } catch (error) {
@@ -85,11 +85,11 @@
         render(data.messages);
         if (data.consultant && data.consultant !== consultantName) {
           consultantName = data.consultant;
-          setStatus(root, `Консультант: ${consultantName}`);
+          setStatus(root, `${root.dataset.i18nConsultant}: ${consultantName}`);
         }
-        if (!data.is_open) setStatus(root, "Чат закрито");
+        if (!data.is_open) setStatus(root, root.dataset.i18nClosed);
       } catch (error) {
-        setStatus(root, "Немає зв'язку. Оновлюємо…");
+        setStatus(root, root.dataset.i18nOffline);
       }
     }
 
@@ -99,7 +99,7 @@
       if (!text) return;
       input.value = "";
       try {
-        await postJson(`${base}${threadId}/send/`, { body: text }, csrfToken(root));
+        await postJson(`${base}${threadId}/send/`, { body: text }, csrfToken(root), root.dataset.i18nGenericError);
         await poll();
       } catch (error) {
         appendBubble(log, error.message, "error");
@@ -121,10 +121,10 @@
     async function start() {
       if (started) return;
       started = true;
-      setStatus(root, "Під'єднуємо консультанта…");
+      setStatus(root, root.dataset.i18nConnecting);
       try {
-        const data = await postJson(openUrl, {}, csrfToken(root));
-        setStatus(root, "Очікуйте відповіді консультанта");
+        const data = await postJson(openUrl, {}, csrfToken(root), root.dataset.i18nGenericError);
+        setStatus(root, root.dataset.i18nWaiting);
         stopPolling = createConsultantSession(root, log, form, data.thread_id, "customer");
       } catch (error) {
         started = false;

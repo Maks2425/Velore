@@ -1,0 +1,328 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: en\n"
+
+msgid "Клієнт"
+msgstr "Customer"
+
+msgid "Консультант"
+msgstr "Consultant"
+
+msgid "Адмін"
+msgstr "Admin"
+
+msgid "Супер Адмін"
+msgstr "Super Admin"
+
+msgid "Жінкам"
+msgstr "Women"
+
+msgid "Чоловікам"
+msgstr "Men"
+
+msgid "Унісекс"
+msgstr "Unisex"
+
+msgid "Очікує оплати"
+msgstr "Awaiting payment"
+
+msgid "Комплектується"
+msgstr "Processing"
+
+msgid "Відправлено"
+msgstr "Shipped"
+
+msgid "У дорозі до вас"
+msgstr "Out for delivery"
+
+msgid "Доставлено"
+msgstr "Delivered"
+
+msgid "Скасовано"
+msgstr "Cancelled"
+
+msgid "Банківська картка (демо)"
+msgstr "Bank card (demo)"
+
+msgid "Velore Pay (демо-гаманець)"
+msgstr "Velore Pay (demo wallet)"
+
+msgid "Оплата при отриманні"
+msgstr "Cash on delivery"
+
+msgid "Успішно"
+msgstr "Succeeded"
+
+msgid "Відхилено"
+msgstr "Failed"
+
+msgid "Новинки"
+msgstr "Newest"
+
+msgid "Ціна: від низької"
+msgstr "Price: low to high"
+
+msgid "Ціна: від високої"
+msgstr "Price: high to low"
+
+msgid "Назва А–Я"
+msgstr "Name A–Z"
+
+msgid "Усі"
+msgstr "All"
+
+msgid "Усі категорії"
+msgstr "All categories"
+
+msgid "Усі бренди"
+msgstr "All brands"
+
+msgid "Поділіться враженням про товар (необов'язково)"
+msgstr "Share your thoughts about the product (optional)"
+
+msgid "AI-помічник тимчасово недоступний."
+msgstr "The AI assistant is temporarily unavailable."
+
+msgid "Не вдалося отримати відповідь. Спробуйте пізніше."
+msgstr "Couldn't get a reply. Please try again later."
+
+msgid "Чат закрито."
+msgstr "This chat is closed."
+
+msgid "Повідомлення порожнє або занадто довге."
+msgstr "Message is empty or too long."
+
+msgid "Чат #{number} від {username}:\n{body}\n\nВідповісти: /reply {number} текст"
+msgstr "Chat #{number} from {username}:\n{body}\n\nReply: /reply {number} text"
+
+msgid "Консультант: {body}"
+msgstr "Consultant: {body}"
+
+msgid "Код недійсний або прострочений. Згенеруйте новий на сайті."
+msgstr "The code is invalid or expired. Generate a new one on the website."
+
+msgid "Готово! Акаунт {username} прив'язано до Velore."
+msgstr "Done! Account {username} is now linked to Velore."
+
+msgid "Формат: /reply <id> <текст>"
+msgstr "Format: /reply <id> <text>"
+
+msgid "Відкритий чат із таким id не знайдено."
+msgstr "No open chat found with that id."
+
+msgid "Надіслано в чат #{number}."
+msgstr "Sent to chat #{number}."
+
+msgid "Відкритих чатів немає."
+msgstr "There are no open chats."
+
+msgid "Відкриті чати:"
+msgstr "Open chats:"
+
+msgid "Повідомлення надіслано консультанту."
+msgstr "Your message has been sent to a consultant."
+
+msgid "Команди для консультантів:"
+msgstr "Commands for consultants:"
+
+msgid "відкриті чати"
+msgstr "open chats"
+
+msgid "відповісти клієнту"
+msgstr "reply to a customer"
+
+msgid "змінити мову"
+msgstr "change language"
+
+msgid "Поточна мова: {language}. Доступні варіанти: {options}."
+msgstr "Current language: {language}. Available options: {options}."
+
+msgid "Невідома мова. Доступні варіанти: {options}."
+msgstr "Unknown language. Available options: {options}."
+
+msgid "Мову змінено на {language}."
+msgstr "Language changed to {language}."
+
+msgid "Щоб прив'язати акаунт, відкрийте сторінку «Telegram» на сайті."
+msgstr "To link your account, open the “Telegram” page on the website."
+
+msgid "Акаунт не прив'язано. Відкрийте сторінку «Telegram» на сайті."
+msgstr "Your account isn't linked. Open the “Telegram” page on the website."
+
+msgid "Перейти до основного контенту"
+msgstr "Skip to main content"
+
+msgid "Основна навігація"
+msgstr "Main navigation"
+
+msgid "Відкрити меню"
+msgstr "Open menu"
+
+msgid "Velore — на головну"
+msgstr "Velore — home"
+
+msgid "Пошук товарів…"
+msgstr "Search products…"
+
+msgid "Пошук товарів"
+msgstr "Search products"
+
+msgid "Бренди та сервіси"
+msgstr "Brands and account"
+
+msgid "Бренди"
+msgstr "Brands"
+
+msgid "Магазин"
+msgstr "Shop"
+
+msgid "Обране, товарів: %(nav_wishlist_count)s"
+msgstr "Wishlist, items: %(nav_wishlist_count)s"
+
+msgid "Обране"
+msgstr "Wishlist"
+
+msgid "Кошик, товарів: %(nav_cart_count)s"
+msgstr "Cart, items: %(nav_cart_count)s"
+
+msgid "Кошик"
+msgstr "Cart"
+
+msgid "Профіль"
+msgstr "Profile"
+
+msgid "Замовлення"
+msgstr "Orders"
+
+msgid "Керування замовленнями"
+msgstr "Manage orders"
+
+msgid "Чати з клієнтами"
+msgstr "Customer chats"
+
+msgid "Ролі"
+msgstr "Roles"
+
+msgid "Адмінка"
+msgstr "Admin panel"
+
+msgid "Вийти"
+msgstr "Log out"
+
+msgid "Увійти"
+msgstr "Log in"
+
+msgid "Навчальний / портфоліо-проєкт — не є офіційним магазином згаданих брендів."
+msgstr "An educational / portfolio project — not an official store of the mentioned brands."
+
+msgid "Зображення: Wikimedia Commons."
+msgstr "Images: Wikimedia Commons."
+
+msgid "Колекція 2026 — Осінь / Зима"
+msgstr "Collection 2026 — Fall / Winter"
+
+msgid "Новий"
+msgstr "New"
+
+msgid "сезон"
+msgstr "season"
+
+msgid "Bape, Maison Margiela, Balenciaga та Dior — одяг, взуття й парфуми в одному місці."
+msgstr "Bape, Maison Margiela, Balenciaga and Dior — clothing, shoes and fragrances in one place."
+
+msgid "Подіум"
+msgstr "Runway"
+
+msgid "Чоловіки"
+msgstr "Men"
+
+msgid "Переглянути"
+msgstr "View"
+
+msgid "Жінки"
+msgstr "Women"
+
+msgid "Парфуми"
+msgstr "Fragrances"
+
+msgid "Весь каталог"
+msgstr "Full catalog"
+
+msgid "Обрані товари"
+msgstr "Featured products"
+
+msgid "Видалити з обраного"
+msgstr "Remove from wishlist"
+
+msgid "Додати в обране"
+msgstr "Add to wishlist"
+
+msgid "Додати в кошик"
+msgstr "Add to cart"
+
+msgid "Привіт! Я помічник Velore. Питайте про бренди, розміри, замовлення чи магазин."
+msgstr "Hi! I'm the Velore assistant. Ask about brands, sizes, orders, or the store."
+
+msgid "Думаю…"
+msgstr "Thinking…"
+
+msgid "Сталася помилка. Спробуйте ще раз."
+msgstr "Something went wrong. Please try again."
+
+msgid "Під'єднуємо консультанта…"
+msgstr "Connecting you to a consultant…"
+
+msgid "Очікуйте відповіді консультанта"
+msgstr "Waiting for a consultant to reply"
+
+msgid "Чат закрито"
+msgstr "Chat closed"
+
+msgid "Немає зв'язку. Оновлюємо…"
+msgstr "Connection lost. Reconnecting…"
+
+msgid "AI-помічник"
+msgstr "AI assistant"
+
+msgid "Закрити чат"
+msgstr "Close chat"
+
+msgid "Напишіть запитання…"
+msgstr "Type your question…"
+
+msgid "Повідомлення AI-помічнику"
+msgstr "Message to the AI assistant"
+
+msgid "Надіслати"
+msgstr "Send"
+
+msgid "Напишіть консультанту…"
+msgstr "Message the consultant…"
+
+msgid "Повідомлення консультанту"
+msgstr "Message to the consultant"
+
+msgid "Щоб написати консультанту, <a href=\"%(login_url)s\" class=\"text-link\">увійдіть</a> в акаунт."
+msgstr "To message a consultant, <a href=\"%(login_url)s\" class=\"text-link\">log in</a> to your account."
+
+msgid "Відкрити чат"
+msgstr "Open chat"
+
+msgid "Чат з клієнтом %(name)s"
+msgstr "Chat with customer %(name)s"
+
+msgid "Чати"
+msgstr "Chats"
+
+msgid "Чат"
+msgstr "Chat"
+
+msgid "ще не призначено"
+msgstr "not assigned yet"
+
+msgid "Відповідь клієнту…"
+msgstr "Reply to the customer…"
+
+msgid "Відповідь клієнту"
+msgstr "Reply to the customer"

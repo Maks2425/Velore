@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 
 class Brand(models.Model):
@@ -51,9 +52,9 @@ class ProductQuerySet(models.QuerySet):
 
 class Product(models.Model):
     class Gender(models.TextChoices):
-        WOMEN = "women", "Жінкам"
-        MEN = "men", "Чоловікам"
-        UNISEX = "unisex", "Унісекс"
+        WOMEN = "women", _("Жінкам")
+        MEN = "men", _("Чоловікам")
+        UNISEX = "unisex", _("Унісекс")
 
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="products")
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="products")

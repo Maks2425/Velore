@@ -1,25 +1,31 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Чат з клієнтом {{ thread.customer.username }} — Velore{% endblock %}
+{% block title %}{% blocktranslate with name=thread.customer.username %}Чат з клієнтом {{ name }}{% endblocktranslate %} — Velore{% endblock %}
 
 {% block content %}
 <section class="page-head">
   <div class="container">
-    <nav class="breadcrumbs"><a href="{% url 'chat:inbox' %}">Чати</a> / Чат #{{ thread.pk }}</nav>
+    <nav class="breadcrumbs"><a href="{% url 'chat:inbox' %}">{% translate "Чати" %}</a> / {% translate "Чат" %} #{{ thread.pk }}</nav>
     <h1>{{ thread.customer.username }}</h1>
-    <p class="lead">Консультант: {{ thread.consultant.username|default:"ще не призначено" }}</p>
+    {% translate "ще не призначено" as not_assigned %}
+    <p class="lead">{% translate "Консультант" %}: {{ thread.consultant.username|default:not_assigned }}</p>
   </div>
 </section>
 
 <section class="section section-tight">
   <div class="container">
-    <div class="staff-chat" data-chat data-mode="staff" data-thread-id="{{ thread.pk }}" data-thread-base="/chat/thread/">
+    <div class="staff-chat" data-chat data-mode="staff" data-thread-id="{{ thread.pk }}" data-thread-base="/chat/thread/"
+         data-i18n-generic-error="{% translate "Сталася помилка. Спробуйте ще раз." %}"
+         data-i18n-consultant="{% translate "Консультант" %}"
+         data-i18n-closed="{% translate "Чат закрито" %}"
+         data-i18n-offline="{% translate "Немає зв'язку. Оновлюємо…" %}">
       {% csrf_token %}
       <p class="chat__status mono" data-chat-status></p>
       <div class="chat__log chat__log--staff" data-chat-log="agent" aria-live="polite"></div>
       <form class="chat__form" data-chat-form="agent">
-        <textarea rows="3" maxlength="1000" placeholder="Відповідь клієнту…" aria-label="Відповідь клієнту" required></textarea>
-        <button type="submit" class="btn btn-primary">Надіслати</button>
+        <textarea rows="3" maxlength="1000" placeholder="{% translate "Відповідь клієнту…" %}" aria-label="{% translate "Відповідь клієнту" %}" required></textarea>
+        <button type="submit" class="btn btn-primary">{% translate "Надіслати" %}</button>
       </form>
     </div>
   </div>

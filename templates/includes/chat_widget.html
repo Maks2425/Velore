@@ -1,20 +1,32 @@
-{% load static %}
-<div class="chat" data-chat data-ai-url="{% url 'chat:ai' %}" data-open-url="{% url 'chat:open_thread' %}" data-thread-base="/chat/thread/" data-authenticated="{% if user.is_authenticated %}true{% else %}false{% endif %}">
+{% load static i18n %}
+<div class="chat" data-chat
+     data-ai-url="{% url 'chat:ai' %}"
+     data-open-url="{% url 'chat:open_thread' %}"
+     data-thread-base="/chat/thread/"
+     data-authenticated="{% if user.is_authenticated %}true{% else %}false{% endif %}"
+     data-i18n-greeting="{% translate "Привіт! Я помічник Velore. Питайте про бренди, розміри, замовлення чи магазин." %}"
+     data-i18n-thinking="{% translate "Думаю…" %}"
+     data-i18n-generic-error="{% translate "Сталася помилка. Спробуйте ще раз." %}"
+     data-i18n-connecting="{% translate "Під'єднуємо консультанта…" %}"
+     data-i18n-waiting="{% translate "Очікуйте відповіді консультанта" %}"
+     data-i18n-consultant="{% translate "Консультант" %}"
+     data-i18n-closed="{% translate "Чат закрито" %}"
+     data-i18n-offline="{% translate "Немає зв'язку. Оновлюємо…" %}">
   {% csrf_token %}
   <div class="chat__panel" data-chat-panel hidden>
     <header class="chat__header">
       <div class="chat__tabs" role="tablist">
-        <button type="button" role="tab" class="chat__tab" data-chat-tab="ai" aria-selected="true">AI-помічник</button>
-        <button type="button" role="tab" class="chat__tab" data-chat-tab="agent" aria-selected="false">Консультант</button>
+        <button type="button" role="tab" class="chat__tab" data-chat-tab="ai" aria-selected="true">{% translate "AI-помічник" %}</button>
+        <button type="button" role="tab" class="chat__tab" data-chat-tab="agent" aria-selected="false">{% translate "Консультант" %}</button>
       </div>
-      <button type="button" class="chat__close" data-chat-toggle aria-label="Закрити чат">×</button>
+      <button type="button" class="chat__close" data-chat-toggle aria-label="{% translate "Закрити чат" %}">×</button>
     </header>
 
     <div class="chat__view" data-chat-view="ai">
       <div class="chat__log" data-chat-log="ai" aria-live="polite"></div>
       <form class="chat__form" data-chat-form="ai">
-        <textarea rows="2" maxlength="1000" placeholder="Напишіть запитання…" aria-label="Повідомлення AI-помічнику" required></textarea>
-        <button type="submit" class="btn btn-primary">Надіслати</button>
+        <textarea rows="2" maxlength="1000" placeholder="{% translate "Напишіть запитання…" %}" aria-label="{% translate "Повідомлення AI-помічнику" %}" required></textarea>
+        <button type="submit" class="btn btn-primary">{% translate "Надіслати" %}</button>
       </form>
     </div>
 
@@ -23,18 +35,19 @@
         <p class="chat__status mono" data-chat-status></p>
         <div class="chat__log" data-chat-log="agent" aria-live="polite"></div>
         <form class="chat__form" data-chat-form="agent">
-          <textarea rows="2" maxlength="1000" placeholder="Напишіть консультанту…" aria-label="Повідомлення консультанту" required></textarea>
-          <button type="submit" class="btn btn-primary">Надіслати</button>
+          <textarea rows="2" maxlength="1000" placeholder="{% translate "Напишіть консультанту…" %}" aria-label="{% translate "Повідомлення консультанту" %}" required></textarea>
+          <button type="submit" class="btn btn-primary">{% translate "Надіслати" %}</button>
         </form>
       {% else %}
         <div class="chat__notice">
-          <p>Щоб написати консультанту, <a href="{% url 'accounts:login' %}" class="text-link">увійдіть</a> в акаунт.</p>
+          {% url 'accounts:login' as login_url %}
+          <p>{% blocktranslate %}Щоб написати консультанту, <a href="{{ login_url }}" class="text-link">увійдіть</a> в акаунт.{% endblocktranslate %}</p>
         </div>
       {% endif %}
     </div>
   </div>
 
-  <button type="button" class="chat__toggle" data-chat-toggle aria-expanded="false" aria-label="Відкрити чат">
+  <button type="button" class="chat__toggle" data-chat-toggle aria-expanded="false" aria-label="{% translate "Відкрити чат" %}">
     <svg class="chat__toggle-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
       <path d="M4 5h16v11H9l-5 4V5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
     </svg>
